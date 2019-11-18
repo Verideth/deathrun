@@ -3,8 +3,28 @@ if SERVER then
 end
 
 if CLIENT then
+
 include("shared.lua")
 include("drf_draw.lua")
+
+
+
+-- load all clientside modules.
+local root = GM.FolderName .. "/gamemode/modules/"
+local _, folders = file.Find(root .. "*", "LUA")
+
+for _, folder in SortedPairs(folders, true) do
+    for _, File in SortedPairs(file.Find(root .. folder .. "/sh_*.lua", "LUA"), true) do
+        include(root .. folder .. "/" .. File)
+    end
+
+    for _, File in SortedPairs(file.Find(root .. folder .. "/cl_*.lua", "LUA"), true) do
+        include(root .. folder .. "/" .. File)
+    end
+end
+
+
+
 
 surface.CreateFont("fdr_futuristic", {
     font = "NeuropolXRg-Regular",

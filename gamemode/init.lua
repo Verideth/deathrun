@@ -1,8 +1,10 @@
 AddCSLuaFile("cl_init.lua")
 AddCSLuaFile("shared.lua")
 AddCSLuaFile("drf_draw.lua")
+AddCSLuaFile("bams_scripts.lua")
 
 include("shared.lua")
+include("bams_scripts.lua")
 
 function GM:PlayerInitialSpawn(ply)
 

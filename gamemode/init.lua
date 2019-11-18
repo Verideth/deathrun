@@ -12,10 +12,12 @@ function GM:PlayerSpawn(ply)
     if (ply:Team() == TEAM_SPECTATOR) then
         ply:Spectate(OBS_MODE_ROAMING)
         ply:StripWeapons()
-        ply:SetWalkSpeed(1000)
+        ply:SetWalkSpeed(300)
         ply:SetRunSpeed(1000)
         return nil
     end
+
+    ply:Give("weapon_crowbar")
 
     local team = math.random(1, 2)
     if (team == 1) then
@@ -111,9 +113,9 @@ function GM:PlayerSpawn(ply)
             ply:SetModel("models/player/Group03m/male_02.mdl")
         end
 
-        ply:SetWalkSpeed(190)
-        ply:SetRunSpeed(300)
-        ply:SetJumpPower(290)
+        ply:SetWalkSpeed(60)
+        ply:SetRunSpeed(280)
+        ply:SetJumpPower(180)
     end
 
     if (ply:Team() == TEAM_DEATH) then
@@ -127,7 +129,7 @@ function GM:PlayerSpawn(ply)
 end
 
 function GM:PlayerLoadout(ply)
-    ply:Give("weapon_pistol")
+    ply:Give("weapon_crowbar")
 
     return true
 end

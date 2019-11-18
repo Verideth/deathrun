@@ -3,6 +3,6 @@
 	"base"		"base"
 	"title"		"Deathrun"
 	"maps"	"^deathrun_|^dr_"
-	"author"	"Verideth"
+	"author"	"Verideth and Bambo"
 	"menusystem"	"1"
 }

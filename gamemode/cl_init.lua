@@ -13,6 +13,13 @@ surface.CreateFont("fdr_futuristic", {
     antialias = true
 })
 
+surface.CreateFont("fdr_futuristic_outline", {
+    font = "NeuropolXRg-Regular",
+    size = 65,
+    weight = 700,
+    antialias = true
+})
+
 surface.CreateFont("fdr_hud_text", {
     font = "Domotika Trial Heavy",
     size = 12,
@@ -46,6 +53,11 @@ function GM:HUDPaint()
     end
 
     if (ply:Team() == TEAM_RUNNERS) then
+        drf_draw.draw_future_outline_text2d("RUNNERS",
+        Color(0, 0, 0, 255),
+        50,
+        10)
+
         drf_draw.draw_future_text2d("RUNNERS",
         Color(100, 100, 220, 255),
         50,
@@ -53,6 +65,11 @@ function GM:HUDPaint()
     end
 
     if (ply:Team() == TEAM_DEATH) then
+        drf_draw.draw_future_outline_text2d("DEATH",
+        Color(0, 0, 0, 255),
+        50,
+        10)
+
         drf_draw.draw_future_text2d("DEATH",
         Color(220, 100, 100, 255),
         50,

@@ -114,8 +114,8 @@ function GM:PlayerSpawn(ply)
         end
 
         ply:SetWalkSpeed(250)
-        ply:SetRunSpeed(60)
-        ply:SetJumpPower(250)
+        ply:SetRunSpeed(280)
+        ply:SetJumpPower(220)
     end
 
     if (ply:Team() == TEAM_DEATH) then

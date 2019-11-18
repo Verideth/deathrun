@@ -5,7 +5,11 @@ function drf_draw.draw_simple_text2d(text, col, x, y)
 end
 
 function drf_draw.draw_future_text2d(text, col, x, y)
-    draw.SimpleText(text, "fdr_futuristic", x, y, col, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+    draw.SimpleText(text, "fdr_futuristic", x, y, col, TEXT_ALIGN_LEFT, TEXT_ALIGN_BOTTOM)
+end
+
+function drf_draw.draw_future_outline_text2d(text, col, x, y)
+    draw.SimpleText(text, "fdr_futuristic_outline", x, y, col, TEXT_ALIGN_LEFT, TEXT_ALIGN_BOTTOM)
 end
 
 function drf_draw.draw_text_3d2d(text, col, pos, rot)

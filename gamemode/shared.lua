@@ -40,15 +40,16 @@ function GM:PlayerNoClip(ply, state)
         return false
     else
         return true
+    end
 end
 
 function GM:PlayerUse(ply, ent)
-    if (not ply:Alive()) then
+    if (ply:Alive() == false) then
         return false
     end
 
-    if (not IsValid(ent)) then
-        retrun false
+    if (ent:IsValid() == nil) then
+        return false
     end
 
     return true

@@ -17,6 +17,15 @@ function GM:PlayerSpawn(ply)
         return nil
     end
 
+    local team = math.random(1, 2)
+    if (team == 1) then
+        ply:SetTeam(TEAM_RUNNERS)
+    end
+
+    if (team == 2) then
+        ply:SetTeam(TEAM_DEATH)
+    end
+
     if (ply:Team() == TEAM_RUNNERS) then
         if (math.random(0, 20) == 0) then
             ply:SetModel("models/player/barney.mdl")

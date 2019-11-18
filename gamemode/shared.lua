@@ -14,7 +14,7 @@ function GM:CreateTeams()
 
     TEAM_DEATH = 2
     team.SetUp(TEAM_DEATH, "Death", Color(255, 100, 100, 255), false)
-    team.SetSpawnPoint(TEAM_DEATH, info_player_terrorist)
+    team.SetSpawnPoint(TEAM_DEATH, "info_player_terrorist")
 
     team.SetUp(3, "Spectator", Color(100, 100, 100, 200), false)
 end

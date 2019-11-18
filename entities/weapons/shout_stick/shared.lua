@@ -40,7 +40,7 @@ SWEP.Secondary.Ammo = ""
 function SWEP:Initialize()
 	if SERVER then self:SetWeaponHoldType("melee") end
 
-	self.Sound = Sound("applause.wav")
+	self.Sound = Sound("applause")
 end
 
 function SWEP:PrimaryAttack()

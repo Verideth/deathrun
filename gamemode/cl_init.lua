@@ -5,7 +5,7 @@ end
 if CLIENT then
 include("shared.lua")
 include("drf_draw.lua")
-include("sound_loader.lua")
+include("sounds_loader.lua")
 
 surface.CreateFont("fdr_futuristic", {
     font = "NeuropolXRg-Regular",

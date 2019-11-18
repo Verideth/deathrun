@@ -1,7 +1,7 @@
 AddCSLuaFile("cl_init.lua")
 AddCSLuaFile("shared.lua")
 AddCSLuaFile("drf_draw.lua")
-AddCSLuaFile("sound_loader.lua")
+AddCSLuaFile("sounds_loader.lua")
 
 include("shared.lua")
 

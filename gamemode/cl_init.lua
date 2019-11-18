@@ -8,7 +8,7 @@ include("drf_draw.lua")
 
 surface.CreateFont("fdr_futuristic", {
     font = "NeuropolXRg-Regular",
-    size = 32,
+    size = 64,
     weight = 700,
     antialias = true
 })
@@ -49,14 +49,14 @@ function GM:HUDPaint()
         drf_draw.draw_future_text2d("RUNNERS",
         Color(100, 100, 220, 255),
         50,
-        50)
+        10)
     end
 
     if (ply:Team() == TEAM_DEATH) then
         drf_draw.draw_future_text2d("DEATH",
         Color(220, 100, 100, 255),
         50,
-        50)
+        10)
     end
 end
 end

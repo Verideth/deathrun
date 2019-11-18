@@ -113,9 +113,9 @@ function GM:PlayerSpawn(ply)
             ply:SetModel("models/player/Group03m/male_02.mdl")
         end
 
-        ply:SetWalkSpeed(60)
-        ply:SetRunSpeed(280)
-        ply:SetJumpPower(180)
+        ply:SetWalkSpeed(250)
+        ply:SetRunSpeed(60)
+        ply:SetJumpPower(250)
     end
 
     if (ply:Team() == TEAM_DEATH) then

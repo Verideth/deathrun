@@ -32,15 +32,15 @@ function GM:HUDPaint()
             if (ob:Team() == TEAM_RUNNERS) then
                 drf_draw.draw_simple_text2d(ob:GetName(),
                 Color(100, 100, 220, 255),
-                800,
-                800)
+                ScrW() / 2,
+                5)
             end
 
             if (ob:Team() == TEAM_DEATH) then
                 drf_draw.draw_simple_text2d(ob:GetName(),
                 Color(220, 100, 100, 255),
-                800,
-                800)
+                ScrW() / 2,
+                5)
             end
         end
     end
@@ -48,15 +48,15 @@ function GM:HUDPaint()
     if (ply:Team() == TEAM_RUNNERS) then
         drf_draw.draw_future_text2d("RUNNERS",
         Color(100, 100, 220, 255),
-        200,
-        200)
+        50,
+        50)
     end
 
     if (ply:Team() == TEAM_DEATH) then
         drf_draw.draw_future_text2d("DEATH",
         Color(220, 100, 100, 255),
-        200,
-        200)
+        50,
+        50)
     end
 end
 end

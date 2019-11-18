@@ -9,12 +9,12 @@ end
 
 function GM:CreateTeams()
     TEAM_RUNNERS = 1
-    team.SetUp(TEAM_RUNNERS, "Runners", Color(100, 255, 100, 255), false)
+    team.SetUp(TEAM_RUNNERS, "Runners", Color(100, 100, 220, 255), false)
     team.SetSpawnPoint(TEAM_RUNNERS, "info_player_counterterrorist")
 
     TEAM_DEATH = 2
-    team.SetUp(TEAM_DEATH, "Death", Color(255, 100, 100, 255), false)
-    team.SetSpawnPoint(TEAM_DEATH, "info_player_terrorist")
+    team.SetUp(TEAM_DEATH, "Death", Color(20, 100, 100, 255), false)
+    team.SetSpawnPoint(TEAM_DEATH, "info_terrorist")
 
     team.SetUp(3, "Spectator", Color(100, 100, 100, 200), false)
 end

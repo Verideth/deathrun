@@ -113,12 +113,14 @@ function GM:PlayerSpawn(ply)
 
         ply:SetWalkSpeed(190)
         ply:SetRunSpeed(300)
+        ply:SetJumpPower(290)
     end
 
     if (ply:Team() == TEAM_DEATH) then
         ply:SetModel("models/player/skeleton.mdl")
         ply:SetWalkSpeed(500)
         ply:SetRunSpeed(750)
+        ply:SetJumpPower(500)
     end
 
     ply:SetHealth(100)

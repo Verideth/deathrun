@@ -22,7 +22,7 @@ elseif CLIENT then
         local message = net.ReadString()
         local centered = net.ReadBool()
 
-        GWARS_Notify(message, centered)
+        DEATHRUN_Notify(message, centered)
     end)
 
     function DEATHRUN_Notify(pMessage, pCentered)

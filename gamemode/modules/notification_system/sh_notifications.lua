@@ -1,6 +1,12 @@
 if SERVER then
 
     util.AddNetworkString("DeathrunNotify")
+
+	function DEATHRUN_NotifyAll(pMessage, pCentered)
+		for k,v in pairs(player.GetAll()) do
+			DEATHRUN_Notify(v, pMessage, pCentered)
+		end
+	end
     
     function DEATHRUN_Notify(ply, pMessage, pCentered)
         net.Start("DeathrunNotify")
@@ -24,9 +30,9 @@ elseif CLIENT then
         -- with :InvalidateLayout( true )
         local backgroundPanel = vgui.Create( "DNotify" )
         if (pCentered) then
-            local xOffset = math.random(-100, 100)
-            local yOffset = math.random(-100, 100)
-            backgroundPanel:SetPos( (ScrW() / 2.0) + xOffset, (ScrH() / 2.0) + yOffset )
+            --local xOffset = math.random(-100, 100)
+            --local yOffset = math.random(-100, 100)
+            backgroundPanel:SetPos( (ScrW() / 2.0), (ScrH() / 2.0) )
         else
             backgroundPanel:SetPos(5, 40)
         end

@@ -16,7 +16,8 @@ if SERVER then
 		local runnersLeftAlive = table.Count(runners) -- how many players are left in the runners team?
 
 		if (runnersLeftAlive <= 1) then -- no more runners left alive, new round.
-			print("Winner is:", runners[1]:Nick())
+			--print("Winner is:", runners[1]:Nick())
+			DEATHRUN_NotifyAll(runners[1]:Nick() .. " wins!")
 
 			timer.Simple(5, function()
 				RunConsoleCommand("changelevel", game.GetMap())

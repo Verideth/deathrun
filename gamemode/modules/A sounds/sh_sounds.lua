@@ -1,5 +1,4 @@
 -- sounds have to be in the 16 bit 44100hz sample rate.
-
 if SERVER then
 	resource.AddFile("sound/applausee3.wav")
 elseif CLIENT then
@@ -11,5 +10,4 @@ elseif CLIENT then
 		pitch = { 95, 110 },
 		sound = "applausee3.wav"
 	})
-	print("loaded")
 end

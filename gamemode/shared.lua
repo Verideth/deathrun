@@ -8,15 +8,15 @@ function GM:Initialize()
 end
 
 function GM:CreateTeams()
-    TEAM_RUNNERS = 1
+    TEAM_RUNNERS = 2
     team.SetUp(TEAM_RUNNERS, "Runners", Color(100, 100, 220, 255), false)
     team.SetSpawnPoint(TEAM_RUNNERS, "info_player_counterterrorist")
 
-    TEAM_DEATH = 2
-    team.SetUp(TEAM_DEATH, "Death", Color(20, 100, 100, 255), false)
-    team.SetSpawnPoint(TEAM_DEATH, "info_terrorist")
+    TEAM_DEATH = 3
+    team.SetUp(TEAM_DEATH, "Death", Color(220, 100, 100, 255), false)
+    team.SetSpawnPoint(TEAM_DEATH, "info_player_terrorist")
 
-    team.SetUp(3, "Spectator", Color(100, 100, 100, 200), false)
+    team.SetUp(TEAM_SPECTATOR, "Spectator", Color(100, 100, 100, 200), false)
 end
 
 function GM:PhysgunPickup(ply, entity)

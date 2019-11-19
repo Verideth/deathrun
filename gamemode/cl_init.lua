@@ -14,6 +14,7 @@ local root = GM.FolderName .. "/gamemode/modules/"
 local _, folders = file.Find(root .. "*", "LUA")
 
 for _, folder in SortedPairs(folders, true) do
+    print("Loading module...", folder)
     for _, File in SortedPairs(file.Find(root .. folder .. "/sh_*.lua", "LUA"), true) do
         include(root .. folder .. "/" .. File)
     end
@@ -21,6 +22,7 @@ for _, folder in SortedPairs(folders, true) do
     for _, File in SortedPairs(file.Find(root .. folder .. "/cl_*.lua", "LUA"), true) do
         include(root .. folder .. "/" .. File)
     end
+    print("Finished loading module", folder)
 end
 
 

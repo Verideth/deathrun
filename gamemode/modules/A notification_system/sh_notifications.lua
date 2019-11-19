@@ -15,6 +15,7 @@ if SERVER then
         net.Send(ply)
     end
 
+
 elseif CLIENT then
 
     net.Receive("DeathrunNotify", function()

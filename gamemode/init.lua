@@ -1,13 +1,18 @@
 AddCSLuaFile("cl_hud.lua")
 AddCSLuaFile("cl_init.lua")
 AddCSLuaFile("shared.lua")
-AddCSLuaFile("modules/rounds_system/sh_rounds.lua")
-AddCSLuaFile("modules/sounds_system/sh_sounds.lua")
-AddCSLuaFile("modules/notification_system/sh_notifications.lua")
-AddCSLuaFile("modules/weapons_system/sh_weapons.lua")
+--AddCSLuaFile("modules/rounds_system/sh_rounds.lua")
+--AddCSLuaFile("modules/sounds_system/sh_sounds.lua")
+--AddCSLuaFile("modules/notification_system/sh_notifications.lua")
+--AddCSLuaFile("modules/weapons_system/sh_weapons.lua")
 
 include("shared.lua")
-include("modules/rounds_system/sh_rounds.lua")
+--include("modules/rounds_system/sh_rounds.lua")
+
+function GM:Initialize()
+    drf_maps = file.Find("gm_", "maps")
+	DRF_CURRENT_GAMESTATE = DRF_GAMESTATE_WAITING
+end
 
 function GM:Initialize()
     drf_maps = file.Find("*.bsp", "maps")
@@ -161,7 +166,23 @@ function GM:PlayerSwitchFlashlight(ply, enabled)
 end
 
 function GM:PlayerShouldTakeDamage(ply, attacker)
+<<<<<<< HEAD
     if (ply:IsPlayer()) then
+=======
+    if (!IsValid(ply) and !IsValid(attacker)) then
+        return false
+    end
+
+    if (IsValid(ply) and !IsValid(attacker)) then
+        return false
+    end
+
+    if (!IsValid(ply) and IsValid(attacker)) then
+        return false
+    end
+
+    if (ply:IsPlayer() and attacker:IsPlayer()) then
+>>>>>>> 89b982f11457cb8d9b1850d18bbe54e10152fea1
         if (ply:Team() == attacker:Team()) then
             return false
         elseif (ply:Team() == TEAM_SPECTATOR or
@@ -169,11 +190,14 @@ function GM:PlayerShouldTakeDamage(ply, attacker)
             return false
         end
 
+<<<<<<< HEAD
         if (ply:Team() == TEAM_DEATH and
         attacker:IsWorld()) then
             return false
         end
 
+=======
+>>>>>>> 89b982f11457cb8d9b1850d18bbe54e10152fea1
         return true
     end
 end

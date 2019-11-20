@@ -1,13 +1,13 @@
 AddCSLuaFile("cl_hud.lua")
 AddCSLuaFile("cl_init.lua")
 AddCSLuaFile("shared.lua")
-AddCSLuaFile("modules/rounds_system/sh_rounds.lua")
-AddCSLuaFile("modules/sounds_system/sh_sounds.lua")
-AddCSLuaFile("modules/notification_system/sh_notifications.lua")
-AddCSLuaFile("modules/weapons_system/sh_weapons.lua")
+--AddCSLuaFile("modules/rounds_system/sh_rounds.lua")
+--AddCSLuaFile("modules/sounds_system/sh_sounds.lua")
+--AddCSLuaFile("modules/notification_system/sh_notifications.lua")
+--AddCSLuaFile("modules/weapons_system/sh_weapons.lua")
 
 include("shared.lua")
-include("modules/rounds_system/sh_rounds.lua")
+--include("modules/rounds_system/sh_rounds.lua")
 
 function GM:Initialize()
     drf_maps = file.Find("gm_", "maps")

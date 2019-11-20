@@ -1,5 +1,5 @@
 GM.Name = "Deathrun"
-GM.Author = "N/A"
+GM.Author = "Verideth and Bambo"
 GM.Email = "N/A"
 GM.Website = "N/A"
 

@@ -10,11 +10,12 @@ include("shared.lua")
 include("modules/rounds_system/sh_rounds.lua")
 
 function GM:Initialize()
-    drf_maps = file.Find("gm_", "maps")
+    drf_maps = file.Find("*.bsp", "maps")
 	DRF_CURRENT_GAMESTATE = DRF_GAMESTATE_WAITING
 end
 
 function GM:PlayerSpawn(ply)
+    timer.Stop("hud_round_time_timer")
     if (ply:Team() == TEAM_SPECTATOR) then
         ply:Spectate(OBS_MODE_CHASE)
 
@@ -27,6 +28,7 @@ function GM:PlayerSpawn(ply)
         return nil
     end
 
+    ply:SetNoCollideWithTeammates(x)
     ply:Give("weapon_crowbar")
 
     -- debug purposes
@@ -132,6 +134,22 @@ function GM:PlayerSpawn(ply)
     end
 
     ply:SetHealth(100)
+
+    if (ply:Team() == TEAM_DEATH) then
+        -- select a random spawn point
+        local deathSpawnPoints = ents.FindByClass("info_player_terrorist")
+        local randomIndex = Math.Rand(1, table.Count(deathSpawnPoints))
+        local randomDeathSpawnPointEnt = deathSpawnPoints[randomIndex]
+
+        ply:SetPos(randomDeathSpawnPointEnt:GetPos())
+    elseif (ply:Team() == TEAM_RUNNERS) then
+        -- select a random spawn point
+        local runnersSpawnPoints = ents.FindByClass("info_player_counterterrorist")
+        local randomIndex = Math.Rand(1, table.Count(runnersSpawnPoints))
+        local randomRunnerSpawnPointEnt = runnersSpawnPoints[randomIndex]
+
+        ply:SetPos(randomRunnerSpawnPointEnt:GetPos())
+    end
 end
 
 function GM:PlayerSwitchFlashlight(ply, enabled)
@@ -143,23 +161,16 @@ function GM:PlayerSwitchFlashlight(ply, enabled)
 end
 
 function GM:PlayerShouldTakeDamage(ply, attacker)
-    if (!IsValid(ply) and !IsValid(attacker)) then
-        return false
-    end
-
-    if (IsValid(ply) and !IsValid(attacker)) then
-        return false
-    end
-
-    if (!IsValid(ply) and IsValid(attacker)) then
-        return false
-    end
-
-    if (ply:IsPlayer() and attacker:IsPlayer()) then
+    if (ply:IsPlayer()) then
         if (ply:Team() == attacker:Team()) then
             return false
         elseif (ply:Team() == TEAM_SPECTATOR or
             attacker:Team() == TEAM_SPECTATOR) then
+            return false
+        end
+
+        if (ply:Team() == TEAM_DEATH and
+        attacker:IsWorld()) then
             return false
         end
 
@@ -171,4 +182,12 @@ function GM:PlayerLoadout(ply)
     ply:Give("weapon_crowbar")
 
     return true
+end
+
+function GM:GetFallDamage(ply, speed)
+    if (ply:Team() == TEAM_RUNNERS) then
+        return math.max(0, math.ceil(0.2418 * speed - 141.75))
+    end
+
+    return 0
 end

@@ -10,10 +10,9 @@ if (DEATHRUN_ADDONS.Rounds != nil) then
     end
 end
 
-DEATHRUN_ADDONS.Rounds = {} 
+DEATHRUN_ADDONS.Rounds = {}
 
 if SERVER then
-
 	util.AddNetworkString("roundSystemShowMapSelect")
 	util.AddNetworkString("roundSystemMapSelected")
 	util.AddNetworkString("roundSystemMapVotedTable")
@@ -123,7 +122,6 @@ elseif CLIENT then
     end
 
 	net.Receive("roundSystemShowMapSelect", function()
-
 		local mapsList = net.ReadTable()
 		DEATHRUN_ADDONS.Rounds.MapVotes = net.ReadTable()
         DEATHRUN_ADDONS.Rounds.PlayerAvatarPanels = {}

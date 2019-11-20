@@ -1,4 +1,14 @@
 local hud_round_time = 0
+local round_start_time = 540
+local timer_on = false
+
+timer.Create("hud_round_time_timer", 1, round_start_time, function()
+    timer_on = true
+
+    if (timer_on == true) then
+        hud_round_time = hud_round_time + 1
+    end
+end)
 
 function draw_crosshair(x, y)
     surface.SetDrawColor(110, 25, 250, 255)
@@ -12,11 +22,13 @@ end
 function draw_target_name(ply)
     local target = ply:GetEyeTrace().Entity
 
-    if (IsValid(target) and target:Alive() and target != ply) then
-        surface.SetTextPos(ScrW() / 2 - 15, ScrH() / 2 - 35)
-        surface.SetFont("CenterPrintText")
-        surface.SetTextColor(Color(255, 255, 255, 255))
-        surface.DrawText(target:Nick())
+    if (target:IsPlayer()) then
+        if (target != ply) then
+            surface.SetTextPos(ScrW() / 2 - 15, ScrH() / 2 - 35)
+            surface.SetFont("CenterPrintText")
+            surface.SetTextColor(Color(255, 255, 255, 255))
+            surface.DrawText(target:Nick())
+        end
     end
 end
 
@@ -79,16 +91,28 @@ function draw_player_hud()
     surface.DrawText(game.GetMap())
 
     -- round time
-    surface.SetDrawColor(255, 255, 255, 255)
-    surface.DrawRect(ScrW() / 2 - 103, 15, 220, 20)
+    if (DRF_CURRENT_GAMESTATE == DRF_GAMESTATE_ROUND) then
+        timer_on = true
 
-    surface.SetDrawColor(30, 30, 30, 255)
-    surface.DrawRect(ScrW() / 2 - 100, 17, 214, 16)
+        surface.SetDrawColor(255, 255, 255, 255)
+        surface.DrawRect(ScrW() / 2 - 103, 15, 220, 20)
 
-    surface.SetTextPos(ScrW() / 2 - 68, 18)
-    surface.SetFont("HudHintTextLarge")
-    surface.SetTextColor(Color(255, 255, 255, 255))
-    surface.DrawText("TIME REMAINING: " .. hud_round_time)
+        surface.SetDrawColor(30, 30, 30, 255)
+        surface.DrawRect(ScrW() / 2 - 100, 17, 214, 16)
+
+        surface.SetTextPos(ScrW() / 2 - 68, 18)
+        surface.SetFont("HudHintTextLarge")
+        surface.SetTextColor(Color(255, 255, 255, 255))
+        surface.DrawText("TIME REMAINING: " .. (round_start_time - hud_round_time))
+
+        if (hud_round_time == round_start_time) then
+            hud_round_time = 1
+            timer_on = false
+            timer.Start("hud_round_time_timer")
+        end
+    else
+        timer_off = false
+    end
 
     -- view player box
     draw_target_name(ply)

@@ -2,7 +2,7 @@ global_timer = 0
 round_started = false
 max_rounds = 9
 next_map = ""
-round_count = 0
+round_count = 1
 round_time = 0
 round_start_time = 540 -- 9 minutes
 death_points = 0
@@ -35,8 +35,6 @@ local runner_win_messages = {
 }
 
 if SERVER then
-util.AddNetworkString("drf_network_timer")
-
 function can_start_round()
 	if (#player.GetAll() > 1) then return true end
 
@@ -48,10 +46,15 @@ timer.Create("drf_timer_countdown", 1, round_start_time, function()
 end)
 
 timer.Create("drf_check_game", 5, 0, function()
-    print("logging")
-	if (can_start_round() == true) then
+    print("[DRF] CHECKING IF THE SERVER CAN START A GAME....")
+
+    if (can_start_round() == true) then
 		start_game()
-	end
+        return
+    end
+
+    print("[DRF] CANNOT START ROUND....")
+    DRF_CURRENT_GAMESTATE = DRF_GAMESTATE_WAITING
 end)
 
 function push_round_number()
@@ -70,6 +73,12 @@ function check_death_to_runner()
 			if (selected_one_death == it) then -- checks if the selected player is equivalent to the iteration (if the player is next up in the for loop)
 				v:SetTeam(TEAM_DEATH)
 			end
+
+            if (selected_one_death ~= it) then
+                v:SetTeam(TEAM_RUNNERS)
+                v:Kill()
+                v:Respawn()
+            end
 		end
 
         has_checked_players_balance = true
@@ -86,6 +95,14 @@ function check_death_to_runner()
 			if ((selected_two_death_one == it) or
 			(selected_two_death_two == it)) then
 				v:SetTeam(TEAM_DEATH)
+                v:Kill()
+				v:Respawn()
+			end
+
+            if ((selected_two_death_one ~= it) or
+			(selected_two_death_two ~= it)) then
+				v:SetTeam(TEAM_RUNNERS)
+                v:Kill()
 				v:Respawn()
 			end
 		end
@@ -102,12 +119,21 @@ function check_death_to_runner()
 		for _, v in pairs(player.GetAll()) do
 			it = it + 1
 
-			if (selected_three_death_one == it) or
+			if ((selected_three_death_one == it) or
 			(selected_three_death_two == it) or
-			(selected_three_death_three == it) then
+			(selected_three_death_three == it)) then
 				v:SetTeam(TEAM_DEATH)
+                v:Kill()
 				v:Respawn()
 			end
+
+            if ((selected_three_death_one ~= it) or
+            (selected_three_death_two ~= it) or
+            (selected_three_death_three ~= it)) then
+                v:SetTeam(TEAM_RUNNERS)
+                v:Kill()
+                v:Respawn()
+            end
 		end
 
         has_checked_players_balance = true
@@ -123,13 +149,22 @@ function check_death_to_runner()
 		for _, v in pairs(player.GetAll()) do
 			it = it + 1
 
-			if (selected_four_death_one == it) or
+			if ((selected_four_death_one == it) or
 			(selected_four_death_two == it) or
 			(selected_four_death_three == it) or
-			(selected_four_death_four == it) then
+			(selected_four_death_four == it)) then
 				v:SetTeam(TEAM_DEATH)
 				v:Respawn()
 			end
+
+            if ((selected_four_death_one ~= it) or
+            (selected_four_death_two ~= it) or
+            (selected_four_death_three ~= it) or
+            (selected_four_death_four ~= it)) then
+                v:SetTeam(TEAM_RUNNERS)
+                v:Kill()
+                v:Respawn()
+            end
 		end
 
         has_checked_players_balance = true
@@ -146,14 +181,24 @@ function check_death_to_runner()
 		for _, v in pairs(player.GetAll()) do
 			it = it + 1
 
-			if (selected_five_death_one == it) or
+			if ((selected_five_death_one == it) or
 			(selected_five_death_two == it) or
 			(selected_five_death_three == it) or
 			(selected_five_death_four == it) or
-			(selected_five_death_five == it) then
+			(selected_five_death_five == it)) then
 				v:SetTeam(TEAM_DEATH)
 				v:Respawn()
 			end
+
+            if ((selected_five_death_one ~= it) or
+            (selected_five_death_two ~= it) or
+            (selected_five_death_three ~= it) or
+            (selected_five_death_four ~= it) or
+            (selected_five_death_five ~= it)) then
+                v:SetTeam(TEAM_RUNNERS)
+                v:Kill()
+                v:Respawn()
+            end
 		end
 
         has_checked_players_balance = true
@@ -177,15 +222,12 @@ end
 function on_round_start()
     push_round_number()
 
-	for _, v in pairs(player.GetAll()) do
-		v:Respawn()
-
-        if (v:Team() == TEAM_RUNNERS) then
-
-        end
-	end
-
-    check_death_to_runner()
+    if (check_death_to_runner() == true) then
+        check_death_to_runner()
+        return true
+    else
+        return false
+    end
 end
 
 function on_round_end()
@@ -196,6 +238,7 @@ function start_round()
 	local time_to_end = os.time() + round_start_time
 	local time_start = os.time()
 
+    timer.Start("hud_round_time_timer")
     timer.Start("drf_timer_countdown")
     DRF_CURRENT_GAMESTATE = DRF_GAMESTATE_ROUND -- gets the think hook moving into round segment
 end
@@ -206,9 +249,14 @@ function on_preround_start()
 
 		if (check_death_to_runner() == true) then
 			round_started = true
-			PrintMessage(HUD_PRINTCENTER, "[DRF MESSAGE]: STARTING NEW ROUND...")
-			on_round_start()
-    		start_round()
+            timer.Stop("drf_check_game")
+
+            if (round_started == true) then
+                PrintMessage(HUD_PRINTCENTER, "[DRF MESSAGE]: STARTING NEW ROUND...")
+                on_round_start()
+                PrintMessage(HUD_PRINTCENTER, "[DRF MESSAGE]: STARTING ROUND " .. round_count .. "...")
+                start_round()
+            end
 
 			return true
 		end
@@ -218,12 +266,14 @@ function on_preround_start()
 		timer.Start("drf_check_game")
 		return false
 	end
-	DRF_CURRENT_GAMESTATE = DRF_GAMESTATE_WAITING
 
+	DRF_CURRENT_GAMESTATE = DRF_GAMESTATE_WAITING
 	return false
 end
 
 function start_game()
+    game.CleanUpMap()
+
     if (round_started == false) then
         timer.Stop("drf_check_game")
         on_preround_start()
@@ -248,7 +298,7 @@ function start_new_round()
 		PrintMessage(HUD_PRINTTALK, "[DRF MESSAGE]: GET READY FOR THE NEXT ROUND")
 
         has_checked_players_balance = false
-		game.CleanUpMap()
+        round_started = false
 		start_game()
 	end
 end
@@ -259,40 +309,25 @@ function round_think_hook()
 	end
 
 	if (DRF_CURRENT_GAMESTATE == DRF_GAMESTATE_ROUND) then
-		for k, v in pairs(player.GetAll()) do
+        local runners = get_players_alive_team(TEAM_RUNNERS)
+        local deaths = get_players_alive_team(TEAM_DEATH)
 
-            local runners = get_players_alive_team(TEAM_RUNNERS)
-            local deaths = get_players_alive_team(TEAM_DEATH)
+        if (round_time == round_start_time) then
+        	for k, v in pairs(player.GetAll()) do
+                v:Freeze(true)
+                v:Respawn()
 
-            if (round_time == round_start_time) then
-        		v:Freeze(true)
-        		v:Kill()
-        		PrintMessage(HUD_PRINTCENTER, "[DRF MESSAGE]: TIMES UP, ROUND IS RESTARTING")
-
-        		DRF_CURRENT_GAMESTATE = DRF_GAMESTATE_ENDROUND
-        		timer.Start("drf_check_game")
+                PrintMessage(HUD_PRINTCENTER, "[DRF MESSAGE]: TIMES UP, ROUND IS RESTARTING")
+                timer.Start("drf_check_game")
                 timer.Stop("drf_timer_countdown")
                 round_time = 1
-            end
-
-            if (table.IsEmpty(runners)) then
-                PrintMessage(HUD_PRINTCENTER, table.Random(death_win_messages))
-                give_death_point()
-                on_round_end()
-                DRF_CURRENT_GAMESTATE = DRF_GAMESTATE_ENDROUND
-            elseif (table.IsEmpty(deaths)) then
-                PrintMessage(HUD_PRINTCENTER, table.Random(runner_win_messages))
-                give_runner_point()
-                on_round_end()
                 DRF_CURRENT_GAMESTATE = DRF_GAMESTATE_ENDROUND
             end
+        end
 
-            if (#player.GetAll() < 2) then
-                DRF_CURRENT_GAMESTATE = DRF_GAMESTATE_WAITING
-            end
-
-            print(tostring(round_time))
-		end
+        if (#player.GetAll() < 2) then
+            DRF_CURRENT_GAMESTATE = DRF_GAMESTATE_WAITING
+        end
 	end
 
 	if (DRF_CURRENT_GAMESTATE == DRF_GAMESTATE_ENDROUND) then
@@ -318,23 +353,54 @@ function round_think_hook()
         end
 
         round_started = false
-        PrintMessage(HUD_PRINTTALK, "[DRF MESSAGE]: MOVING ONTO THE %i ROUND", round_count)
-        start_game()
+        PrintMessage(HUD_PRINTTALK, "[DRF MESSAGE]: MOVING ONTO THE" .. round_count .. "ROUND")
+        start_new_round()
 
-    	DRF_CURRENT_GAMESTATE = DRF_GAMESTATE_OUT_OF_THINK
+    	DRF_CURRENT_GAMESTATE = DRF_GAMESTATE_WAITING
     end
 end
 hook.Add("Think", "drf_round_think_hook", round_think_hook)
 
+local runners = team.GetPlayers(TEAM_RUNNERS)
+local deaths = team.GetPlayers(TEAM_DEATH)
 function death_runner(victim, inflictor, attacker)
-	if victim:Team() == TEAM_RUNNERS then -- switch the player to the other team
-		victim:SetTeam(TEAM_SPECTATOR)
-		victim:Kill()
-	elseif (victim:Team() == TEAM_DEATH and attacker:Team() == TEAM_RUNNERS) then
-		victim:Kill()
+    local vic_pos = victim:GetPos()
+
+    if ((victim:Team() == TEAM_RUNNERS) and
+    (victim:Team() ~= attacker:Team())) then
+        victim:Kill()
         victim:SetTeam(TEAM_SPECTATOR)
-	end
+        victim:Respawn()
+    elseif ((victim:Team() == TEAM_DEATH) and
+        attacker:Team() == TEAM_RUNNERS) then
+        victim:SetTeam(TEAM_SPECTATOR)
+    elseif ((victim:Team() == TEAM_DEATH) and
+        attacker:Team() ~= TEAM_RUNNERS) then
+        return false
+    elseif (inflictor:IsWorld() and victim:Team() == TEAM_RUNNERS) then
+        victim:Kill()
+        victim:SetTeam(TEAM_SPECTATOR)
+        victim:Respawn()
+    elseif (!inflictor:IsPlayer() and
+        victim:Team() == TEAM_DEATH) then
+        victim:Respawn()
+        victim:SetPos(vic_pos)
+        victim:SetTeam(TEAM_DEATH)
+    end
+
+    if (!table.HasValue(runners, TEAM_RUNNERS)) then
+        PrintMessage(HUD_PRINTTALK, table.Random(death_win_messages))
+        timer.Start("drf_check_game")
+        timer.Stop("drf_timer_countdown")
+    end
+
+    if (!table.HasValue(deaths, TEAM_DEATH)) then
+        PrintMessage(HUD_PRINTTALK, table.Random(runner_win_messages))
+        timer.Start("drf_check_game")
+        timer.Stop("drf_timer_countdown")
+    end
 end
 hook.Add("PlayerDeath", "death_runner_hk", death_runner)
 
-elseif CLIENT then end
+elseif CLIENT then
+end

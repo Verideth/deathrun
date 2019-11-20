@@ -317,8 +317,6 @@ function start_game()
     end
 end
 concommand.Add("drf_start_round", start_game)
-
-=======
     if (round_started == false) then
         timer.Stop("drf_check_game")
         on_preround_start()
@@ -326,7 +324,6 @@ concommand.Add("drf_start_round", start_game)
 end
 concommand.Add("drf_start_round", start_game)
 
->>>>>>> 89b982f11457cb8d9b1850d18bbe54e10152fea1
 function give_runner_point()
 	runner_points = runner_points + 1
 end
@@ -355,7 +352,6 @@ function round_think_hook()
 	end
 
 	if (DRF_CURRENT_GAMESTATE == DRF_GAMESTATE_ROUND) then
-<<<<<<< HEAD
         local runners = get_players_alive_team(TEAM_RUNNERS)
         local deaths = get_players_alive_team(TEAM_DEATH)
 
@@ -375,7 +371,7 @@ function round_think_hook()
         if (#player.GetAll() < 2) then
             DRF_CURRENT_GAMESTATE = DRF_GAMESTATE_WAITING
         end
-=======
+
 		for k, v in pairs(player.GetAll()) do
 
             local runners = get_players_alive_team(TEAM_RUNNERS)
@@ -410,7 +406,6 @@ function round_think_hook()
 
             print(tostring(round_time))
 		end
->>>>>>> 89b982f11457cb8d9b1850d18bbe54e10152fea1
 	end
 
 	if (DRF_CURRENT_GAMESTATE == DRF_GAMESTATE_ENDROUND) then
@@ -422,7 +417,6 @@ function round_think_hook()
             elseif (runner_points > death_points) then
                 PrintMessage(HUD_PRINTTALK, "[DRF MESSAGE]: RUNNERS HAVE WON THE GAME WITH 5 POINTS")
             end
-<<<<<<< HEAD
 
             local rand_map = table.Random(drf_maps)
             PrintMessage(HUD_PRINTTALK, "[DRF MESSAGE]: MOVING ONTO " .. rand_map .. " IN 15 SECONDS...")
@@ -436,12 +430,11 @@ function round_think_hook()
             DRF_CURRENT_GAMESTATE = DRF_GAMESTATE_OUT_OF_THINK
         end
 
-        round_started = false
-        PrintMessage(HUD_PRINTTALK, "[DRF MESSAGE]: MOVING ONTO THE" .. round_count .. "ROUND")
-        start_new_round()
+            round_started = false
+            PrintMessage(HUD_PRINTTALK, "[DRF MESSAGE]: MOVING ONTO THE" .. round_count .. "ROUND")
+            start_new_round()
 
-    	DRF_CURRENT_GAMESTATE = DRF_GAMESTATE_WAITING
-=======
+    	   DRF_CURRENT_GAMESTATE = DRF_GAMESTATE_WAITING
 
             local rand_map = table.Random(drf_maps)
             PrintMessage(HUD_PRINTTALK, "[DRF MESSAGE]: MOVING ONTO " .. rand_map .. " IN 15 SECONDS...")
@@ -460,12 +453,10 @@ function round_think_hook()
         start_game()
 
     	DRF_CURRENT_GAMESTATE = DRF_GAMESTATE_OUT_OF_THINK
->>>>>>> 89b982f11457cb8d9b1850d18bbe54e10152fea1
     end
 end
 hook.Add("Think", "drf_round_think_hook", round_think_hook)
 
-<<<<<<< HEAD
 local runners = team.GetPlayers(TEAM_RUNNERS)
 local deaths = team.GetPlayers(TEAM_DEATH)
 function death_runner(victim, inflictor, attacker)
@@ -508,7 +499,6 @@ end
 hook.Add("PlayerDeath", "death_runner_hk", death_runner)
 
 elseif CLIENT then
-=======
 function death_runner(victim, inflictor, attacker)
 	if victim:Team() == TEAM_RUNNERS then -- switch the player to the other team
 		victim:SetTeam(TEAM_SPECTATOR)
@@ -517,7 +507,6 @@ function death_runner(victim, inflictor, attacker)
 		victim:Kill()
         victim:SetTeam(TEAM_SPECTATOR)
 	end
->>>>>>> 89b982f11457cb8d9b1850d18bbe54e10152fea1
 end
 hook.Add("PlayerDeath", "death_runner_hk", death_runner)
 

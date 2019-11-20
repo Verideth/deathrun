@@ -143,14 +143,13 @@ function GM:PlayerSpawn(ply)
     if (ply:Team() == TEAM_DEATH) then
         -- select a random spawn point
         local deathSpawnPoints = ents.FindByClass("info_player_terrorist")
-        local randomIndex = Math.Rand(1, table.Count(deathSpawnPoints))
+        local randomIndex = math.Rand(1, table.Count(deathSpawnPoints))
         local randomDeathSpawnPointEnt = deathSpawnPoints[randomIndex]
 
         ply:SetPos(randomDeathSpawnPointEnt:GetPos())
     elseif (ply:Team() == TEAM_RUNNERS) then
-        -- select a random spawn point
         local runnersSpawnPoints = ents.FindByClass("info_player_counterterrorist")
-        local randomIndex = Math.Rand(1, table.Count(runnersSpawnPoints))
+        local randomIndex = math.Rand(1, table.Count(runnersSpawnPoints))
         local randomRunnerSpawnPointEnt = runnersSpawnPoints[randomIndex]
 
         ply:SetPos(randomRunnerSpawnPointEnt:GetPos())

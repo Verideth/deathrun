@@ -5,6 +5,7 @@ GM.Website = "N/A"
 
 TEAM_RUNNERS = 2
 TEAM_DEATH = 3
+drf_maps = {}
 
 function GM:CreateTeams()
     team.SetUp(TEAM_SPECTATOR, "Spectator", Color(100, 100, 100, 200), false)

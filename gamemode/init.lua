@@ -9,6 +9,11 @@ AddCSLuaFile("modules/weapons_system/sh_weapons.lua")
 include("shared.lua")
 include("modules/rounds_system/sh_rounds.lua")
 
+function GM:Initialize()
+    drf_maps = file.Find("gm_", "maps")
+	DRF_CURRENT_GAMESTATE = DRF_GAMESTATE_WAITING
+end
+
 function GM:PlayerSpawn(ply)
     if (ply:Team() == TEAM_SPECTATOR) then
         ply:Spectate(OBS_MODE_CHASE)
@@ -138,9 +143,26 @@ function GM:PlayerSwitchFlashlight(ply, enabled)
 end
 
 function GM:PlayerShouldTakeDamage(ply, attacker)
-    if (ply:Team() == attacker:Team()) then
+    if (!IsValid(ply) and !IsValid(attacker)) then
         return false
-    elseif ((ply:Team() != TEAM_SPECTATOR) and (attacker:Team() != ply:Team())) then
+    end
+
+    if (IsValid(ply) and !IsValid(attacker)) then
+        return false
+    end
+
+    if (!IsValid(ply) and IsValid(attacker)) then
+        return false
+    end
+
+    if (ply:IsPlayer() and attacker:IsPlayer()) then
+        if (ply:Team() == attacker:Team()) then
+            return false
+        elseif (ply:Team() == TEAM_SPECTATOR or
+            attacker:Team() == TEAM_SPECTATOR) then
+            return false
+        end
+
         return true
     end
 end

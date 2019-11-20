@@ -52,3 +52,50 @@ function GM:PlayerUse(ply, ent)
 
     return true
 end
+
+-- somebody else made this. took from old deathrun gamemode.
+-- mimics CSS movement inside of GMod
+function GM:Move(pl, movedata)
+	if pl:IsOnGround() or !pl:Alive() or pl:WaterLevel() > 0 then return end
+
+	local aim = movedata:GetMoveAngles()
+	local forward, right = aim:Forward(), aim:Right()
+	local fmove = movedata:GetForwardSpeed()
+	local smove = movedata:GetSideSpeed()
+
+	forward.z, right.z = 0,0
+	forward:Normalize()
+	right:Normalize()
+
+	local wishvel = forward * fmove + right * smove
+	wishvel.z = 0
+
+	local wishspeed = wishvel:Length()
+
+	if(wishspeed > movedata:GetMaxSpeed()) then
+		wishvel = wishvel * (movedata:GetMaxSpeed()/wishspeed)
+		wishspeed = movedata:GetMaxSpeed()
+	end
+
+	local wishspd = wishspeed
+	wishspd = math.Clamp(wishspd, 0, 30)
+
+	local wishdir = wishvel:GetNormal()
+	local current = movedata:GetVelocity():Dot(wishdir)
+
+	local addspeed = wishspd - current
+
+	if(addspeed <= 0) then return end
+
+	local accelspeed = (120) * wishspeed * FrameTime()
+
+	if(accelspeed > addspeed) then
+		accelspeed = addspeed
+	end
+
+	local vel = movedata:GetVelocity()
+	vel = vel + (wishdir * accelspeed)
+	movedata:SetVelocity(vel)
+
+	return false
+end

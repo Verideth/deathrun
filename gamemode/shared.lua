@@ -3,20 +3,17 @@ GM.Author = "N/A"
 GM.Email = "N/A"
 GM.Website = "N/A"
 
-function GM:Initialize()
-
-end
+TEAM_RUNNERS = 2
+TEAM_DEATH = 3
 
 function GM:CreateTeams()
-    TEAM_RUNNERS = 2
-    team.SetUp(TEAM_RUNNERS, "Runners", Color(100, 100, 220, 255), false)
-    team.SetSpawnPoint(TEAM_RUNNERS, "info_player_counterterrorist")
-
-    TEAM_DEATH = 3
-    team.SetUp(TEAM_DEATH, "Death", Color(220, 100, 100, 255), false)
-    team.SetSpawnPoint(TEAM_DEATH, "info_player_terrorist")
-
     team.SetUp(TEAM_SPECTATOR, "Spectator", Color(100, 100, 100, 200), false)
+    team.SetUp(TEAM_RUNNERS, "Runners", Color(100, 100, 220, 255), false)
+    team.SetUp(TEAM_DEATH, "Death", Color(220, 100, 100, 255), false)
+
+    team.SetSpawnPoint(TEAM_RUNNERS, "info_player_counterterrorist")
+    team.SetSpawnPoint(TEAM_DEATH, "info_player_terrorist")
+    team.SetSpawnPoint(TEAM_SPECTATOR, "worldspawn")
 end
 
 function GM:PhysgunPickup(ply, entity)

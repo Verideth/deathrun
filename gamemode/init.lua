@@ -1,36 +1,21 @@
+AddCSLuaFile("cl_hud.lua")
 AddCSLuaFile("cl_init.lua")
 AddCSLuaFile("shared.lua")
-AddCSLuaFile("drf_draw.lua")
-AddCSLuaFile("cl_hud.lua")
+AddCSLuaFile("modules/rounds_system/sh_rounds.lua")
+AddCSLuaFile("modules/sounds_system/sh_sounds.lua")
+AddCSLuaFile("modules/notification_system/sh_notifications.lua")
+AddCSLuaFile("modules/weapons_system/sh_weapons.lua")
+
 include("shared.lua")
-
--- Load all the files in the modules file.
-local fol = GM.FolderName .. "/gamemode/modules/"
-local files, folders = file.Find(fol .. "*", "LUA")
-for _, folder in SortedPairs(folders, true) do
-    print("Loading module...", folder)
-    for _, File in SortedPairs(file.Find(fol .. folder .. "/sh_*.lua", "LUA"), true) do
-        AddCSLuaFile(fol .. folder .. "/" .. File)
-        include(fol .. folder .. "/" .. File)
-    end
-
-    for _, File in SortedPairs(file.Find(fol .. folder .. "/sv_*.lua", "LUA"), true) do
-        include(fol .. folder .. "/" .. File)
-    end
-
-    for _, File in SortedPairs(file.Find(fol .. folder .. "/cl_*.lua", "LUA"), true) do
-        AddCSLuaFile(fol .. folder .. "/" .. File)
-    end
-    print("Completed loading module", folder)
-end
-
-function GM:PlayerInitialSpawn(ply)
-
-end
+include("modules/rounds_system/sh_rounds.lua")
 
 function GM:PlayerSpawn(ply)
     if (ply:Team() == TEAM_SPECTATOR) then
-        ply:Spectate(OBS_MODE_ROAMING)
+        ply:Spectate(OBS_MODE_CHASE)
+
+        local player_to_spec = math.random(1, #player.GetAll())
+        ply:SpectateEntity(player_to_spec)
+
         ply:StripWeapons()
         ply:SetWalkSpeed(300)
         ply:SetRunSpeed(1000)
@@ -39,14 +24,9 @@ function GM:PlayerSpawn(ply)
 
     ply:Give("weapon_crowbar")
 
-    local team = math.random(1, 3)
-    if (team == 1) then
-        ply:SetTeam(TEAM_RUNNERS)
-    end
-
-    if (team == 2) then
-        ply:SetTeam(TEAM_DEATH)
-    end
+    -- debug purposes
+    local team = math.random(2,3)
+    ply:SetTeam(team)
 
     local model = math.random(0, 20)
     if (ply:Team() == TEAM_RUNNERS) then
@@ -147,6 +127,22 @@ function GM:PlayerSpawn(ply)
     end
 
     ply:SetHealth(100)
+end
+
+function GM:PlayerSwitchFlashlight(ply, enabled)
+    if (ply:KeyPressed(KEY_F)) then
+        enabled = true
+        ply:Flashlight(true)
+        return true
+    end
+end
+
+function GM:PlayerShouldTakeDamage(ply, attacker)
+    if (ply:Team() == attacker:Team()) then
+        return false
+    elseif ((ply:Team() != TEAM_SPECTATOR) and (attacker:Team() != ply:Team())) then
+        return true
+    end
 end
 
 function GM:PlayerLoadout(ply)

@@ -22,16 +22,21 @@ if SERVER then
         DEATHRUN_ADDONS.TeamManager.SwitchToRunners(ply)
     end)
 
-    hook.Add("PlayerDeath", "deathrunPlayerDeath", function( victim, inflictor, attacker )
-        DEATHRUN_ADDONS.TeamManager.PlayerDeath(ply)
-    end
-
-
     DEATHRUN_ADDONS.TeamManager.CleanUp = function()
 
     end
 
     DEATHRUN_ADDONS.TeamManager.PlayerSpawned = function(ply)
+        if (ply:Team() == TEAM_SPECTATOR) then
+            ply:Spectate(OBS_MODE_ROAMING)
+            ply:StripWeapons()
+            return
+        end
+
+        --[[
+            This section of code assigned the person to the correct team
+        ]]
+
         -- Select the correct team for a player that has just spawned.
         local deathPlayers = team.GetPlayers(TEAM_DEATH)
         local runnerPlayers = team.GetPlayers(TEAM_RUNNERS)
@@ -60,10 +65,16 @@ if SERVER then
                 DEATHRUN_ADDONS.Notify.NotifyAll(ply:Nick() .. " has joined the Runners team!", DEATHRUN_ADDONS.Notify.Enums["LABEL"])
             end
         end
+
+
+        --[[
+            This section of code makes the player spawn with given things.
+        ]]
     end
 
     DEATHRUN_ADDONS.TeamManager.PlayerDeath = function(ply)
-
+        ply:SetTeam(TEAM_SPECTATOR)
+        ply:Spawn()
     end
     
     DEATHRUN_ADDONS.TeamManager.SwitchToDeath = function(ply)

@@ -24,12 +24,7 @@ function GM:PlayerSpawn(ply)
     timer.Stop("hud_round_time_timer")
     timer.Start("hud_round_time_timer")
 
-    if (ply:Team() == TEAM_SPECTATOR) then
-        ply:Spectate(OBS_MODE_ROAMING)
-        ply:StripWeapons()
-    end
-
-    DEATHRUN_ADDONS.TeamSwitch.PlayerSpawned(ply)
+    DEATHRUN_ADDONS.TeamManager.PlayerSpawned(ply)
     
     ply:SetNoCollideWithTeammates(true)
     ply:Give("weapon_crowbar")
@@ -149,6 +144,10 @@ function GM:PlayerSpawn(ply)
 
         ply:SetPos(runnersSpawnPoints[1]:GetPos())
     end
+end
+
+function GM:PlayerDeath(ply, inflictor, attacker)
+    DEATHRUN_ADDONS.TeamManager.PlayerDeath(ply)
 end
 
 function GM:PlayerSwitchFlashlight(ply, enabled)

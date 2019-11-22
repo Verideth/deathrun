@@ -23,7 +23,7 @@ end
 function GM:PlayerSpawn(ply)
     timer.Stop("hud_round_time_timer")
     timer.Start("hud_round_time_timer")
-    
+
 
     if (ply:Team() == TEAM_SPECTATOR) then
         ply:Spectate(OBS_MODE_ROAMING)
@@ -46,7 +46,6 @@ function GM:PlayerSpawn(ply)
     else
         -- there must be 1 death for every 5 players.
         -- number of deaths = number of players / 5
-
         local maxNumberOfDeathPlayers = math.Round(numberOfRunnerPlayers / 5)
         if (maxNumberOfDeathPlayers == 0) then maxNumberOfDeathPlayers = 1 end
 

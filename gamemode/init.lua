@@ -18,7 +18,6 @@ include("misc/sh_claim.lua")
 
 function GM:Initialize()
 	DRF_CURRENT_GAMESTATE = DRF_GAMESTATE_WAITING
-    init_claim_system()
 end
 
 function GM:PlayerSpawn(ply)
@@ -26,16 +25,13 @@ function GM:PlayerSpawn(ply)
     timer.Start("hud_round_time_timer")
 
     if (ply:Team() == TEAM_SPECTATOR) then
-        ply:Spectate(OBS_MODE_ROAMING)
+        --ply:Spectate(OBS_MODE_ROAMING)
         ply:StripWeapons()
-        return nil
     end
 
     ply:SetNoCollideWithTeammates(true)
     ply:Give("weapon_crowbar")
     ply:StripWeapon("weapon_knife")
-
-    timer.Start("check_game")
 
     local model = math.random(0, 20)
     if (ply:Team() == TEAM_RUNNERS) then
@@ -132,7 +128,7 @@ function GM:PlayerSpawn(ply)
         ply:SetModel("models/player/skeleton.mdl")
         ply:SetWalkSpeed(500)
         ply:SetRunSpeed(750)
-        ply:SetJumpPower(340)
+        ply:SetJumpPower(450)
     end
 
     ply:SetHealth(100)
@@ -154,12 +150,8 @@ function GM:PlayerSpawn(ply)
 end
 
 function GM:PlayerSwitchFlashlight(ply, enabled)
-    if (ply:KeyPressed(IN_USE)) then
-        enabled = true
-        ply:Flashlight(true)
-        print("Flashlight is on!")
-        return true
-    end
+    ply:AllowFlashlight(true)
+    return ply:CanUseFlashlight()
 end
 
 function GM:PlayerShouldTakeDamage(ply, attacker)

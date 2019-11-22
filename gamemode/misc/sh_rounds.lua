@@ -26,11 +26,18 @@ end
 DEATHRUN_ADDONS.Rounds = {}
 
 if SERVER then
-    local ran_timer_already = false
-    timer.Create("check_game", 5, 0, function()
-        if (ran_timer_already == false
-        and #player.GetAll() >= 2) then
-            check_death_to_runner()
+    timer.Create("check_game", 10, 0, function()
+        if (DRF_CURRENT_GAMESTATE == DRF_GAMESTATE_WAITING) then
+            if (#player.GetAll() >= 2) then
+                check_death_to_runner()
+            end
+        end
+    end)
+
+    timer.Create("end_round_timer", round_start_time, 0, function()
+        if (DRF_CURRENT_GAMESTATE == DRF_GAMESTATE_ROUND) then
+            round_count = round_count + 1
+            cleanup_round()
         end
     end)
 
@@ -65,9 +72,11 @@ if SERVER then
                 PrintMessage(HUD_PRINTCENTER, "[DRF MESSAGE]: NOT ENOUGH PLAYERS FOR ROUND " .. round_count)
                 return false
             end
+            
+            timer.Start("hud_round_time_timer")
+            timer.Start("end_round_timer")
 
         	if (#player.GetAll() >= 2 and #player.GetAll() <= 5) then
-                timer.Stop("check_game")
                 PrintMessage(HUD_PRINTCENTER, "[DRF MESSAGE]: STARTING ROUND " .. round_count)
 
         		for _, v in pairs(player.GetAll()) do
@@ -101,15 +110,14 @@ if SERVER then
                 end
 
                 has_checked_players_balance = true
-                print("Finished checking death to runners!")
-                timer.Stop("hud_round_time_timer")
-                timer.Start("hud_round_time_timer")
                 DRF_CURRENT_GAMESTATE = DRF_GAMESTATE_ROUND
+                print("Finished checking death to runners!")
+                timer.Start("hud_round_time_timer")
+                timer.Start("end_round_timer")
         		return true
         	end
 
         	if (#player.GetAll() >= 6 and #player.GetAll() <= 9) then
-                timer.Stop("check_game")
         		local selected_two_death_one = math.random(1, 4)
         		local selected_two_death_two = math.random(4, #player.GetAll())
 
@@ -130,16 +138,14 @@ if SERVER then
         		end
 
                 has_checked_players_balance = true
-                print("Finished checking death to runners!")
-                timer.Stop("hud_round_time_timer")
-                timer.Start("hud_round_time_timer")
                 DRF_CURRENT_GAMESTATE = DRF_GAMESTATE_ROUND
-                print(tostring(#player.GetAll()))
+                print("Finished checking death to runners!")
+                timer.Start("hud_round_time_timer")
+                timer.Start("end_round_timer")
         		return true
         	end
 
         	if (#player.GetAll() >= 10 and #player.GetAll() <= 14) then
-                timer.Stop("check_game")
         		local selected_three_death_one = math.random(1, 4)
         		local selected_three_death_two = math.random(4, 9)
         		local selected_three_death_three = math.random(9, #player.GetAll())
@@ -163,14 +169,14 @@ if SERVER then
         		end
 
                 has_checked_players_balance = true
+                DRF_CURRENT_GAMESTATE = DRF_GAMESTATE_ROUND
                 print("Finished checking death to runners!")
-                timer.Stop("hud_round_time_timer")
                 timer.Start("hud_round_time_timer")
+                timer.Start("end_round_timer")
         		return true
         	end
 
         	if (#player.GetAll() >= 15 and #player.GetAll() <= 19) then
-                timer.Stop("check_game")
         		local selected_four_death_one = math.random(1, 4)
         		local selected_four_death_two = math.random(4, 9)
         		local selected_four_death_three = math.random(9, 14)
@@ -199,15 +205,14 @@ if SERVER then
         		end
 
                 has_checked_players_balance = true
-                print("Finished checking death to runners!")
-                timer.Stop("hud_round_time_timer")
-                timer.Start("hud_round_time_timer")
                 DRF_CURRENT_GAMESTATE = DRF_GAMESTATE_ROUND
+                print("Finished checking death to runners!")
+                timer.Start("hud_round_time_timer")
+                timer.Start("end_round_timer")
         		return true
         	end
 
         	if (#player.GetAll() >= 20 and #player.GetAll() <= 24) then
-                timer.Stop("check_game")
         		local selected_five_death_one = math.random(1, 4)
         		local selected_five_death_two = math.random(4, 9)
         		local selected_five_death_three = math.random(9, 14)
@@ -238,11 +243,11 @@ if SERVER then
                     end
         		end
 
+                has_checked_players_balance = true
                 DRF_CURRENT_GAMESTATE = DRF_GAMESTATE_ROUND
                 print("Finished checking death to runners!")
-                timer.Stop("hud_round_time_timer")
                 timer.Start("hud_round_time_timer")
-                has_checked_players_balance = true
+                timer.Start("end_round_timer")
         		return true
         	end
         end
@@ -256,6 +261,8 @@ if SERVER then
 
         if (has_checked_players_balance == false) then
             DRF_CURRENT_GAMESTATE = DRF_GAMESTATE_WAITING
+            RunConsoleCommand("gmod_admin_cleanup")
+            timer.Start("hud_round_time_timer")
             check_death_to_runner()
         end
     end
@@ -307,11 +314,19 @@ if SERVER then
 
         if (DRF_CURRENT_GAMESTATE == DRF_GAMESTATE_ROUND) then
         	if victim:Team() == TEAM_RUNNERS then -- switch the player to the other team
+                print("TEAM_RUNNERS set_team is next")
     			victim:SetTeam(TEAM_SPECTATOR)
+                print("TEAM_RUNNERS spawn is next")
+                victim:Spawn()
+                print("TEAM_RUNNERS success")
     		end
 
             if victim:Team() == TEAM_DEATH then
+                print("TEAM_DEATH set_team is next")
     			victim:SetTeam(TEAM_SPECTATOR)
+                print("TEAM_DEATH spawn is next")
+                victim:Spawn()
+                print("TEAM_DEATH success")
     		end
 
     		-- how many runners are still alive?
@@ -319,7 +334,6 @@ if SERVER then
             local deaths = team.GetPlayers(TEAM_DEATH)
 
     		if (#runners < 1) then -- no more runners left alive, new round.
-    			--DEATHRUN_ADDONS.Notify.NotifyAll("Death(s) win!", 2)
                 round_count = round_count + 1
 
                 if (round_count > max_rounds) then
@@ -331,20 +345,13 @@ if SERVER then
                         PrintMessage(HUD_PRINTCENTER, "Death(s) win this game! Starting next map...")
                     end
 
-                    PrintMessage(HUD_PRINTCENTER, "[DRF MESSAGE]: CHANGING MAP....")
-
         			call_mapvote_timer()
                     return true
                 end
 
                 death_points = death_points + 1
-                print("round_count = " .. round_count)
-                DRF_CURRENT_GAMESTATE = DRF_GAMESTATE_WAITING
-
-                for _, v in pairs(player.GetAll()) do
-                    v:SetTeam(TEAM_RUNNERS)
-                    v:Respawn()
-                end
+                PrintMessage(HUD_PRINTCENTER, "[DRF MESSAGE]: DEATHS WIN....")
+                timer.Simple(3, function() end)
 
                 cleanup_round()
     		end
@@ -354,27 +361,20 @@ if SERVER then
 
                 if (round_count > max_rounds) then
                     if (runner_points > death_points) then
-            			PrintMessage(HUD_PRINTCENTER, "[DRF MESSAGE]: Runner(s) win the game! Starting next map...")
+            			PrintMessage(HUD_PRINTCENTER, "[DRF MESSAGE]: RUNNER(S) WIN THE GAME! STARTING NEXT MAP...")
                     end
 
                     if (death_points > runner_points) then
-                        PrintMessage(HUD_PRINTTALK, "[DRF MESSAGE]: Death(s) win this game! Starting next map...")
+                        PrintMessage(HUD_PRINTCENTER, "[DRF MESSAGE]: DEATH(S) WIN THE GAME! STARTING NEXT MAP...")
                     end
-
-                    PrintMessage(HUD_PRINTCENTER, "[DRF MESSAGE]: CHANGING MAP....")
 
                     call_mapvote_timer()
                     return true
                 end
 
                 runner_points = runner_points + 1
-                print("round_count = " .. round_count)
-                DRF_CURRENT_GAMESTATE = DRF_GAMESTATE_WAITING
-
-                for _, v in pairs(player.GetAll()) do
-                    v:SetTeam(TEAM_RUNNERS)
-                    v:Respawn()
-                end
+                PrintMessage(HUD_PRINTCENTER, "[DRF MESSAGE]: RUNNERS WIN....")
+                timer.Simple(3, function() end)
 
                 cleanup_round()
             end
@@ -463,7 +463,6 @@ elseif CLIENT then
                 surface.SetTextColor(Color(255, 255, 255, 255))
                 surface.DrawText(v)
 			end
-
 
 			local voteSectionScroll = List:Add( "DPanel" ) -- Create the Scroll panel
 			voteSectionScroll:SetSize(ScrW(), 64)

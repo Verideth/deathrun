@@ -9,6 +9,7 @@ AddCSLuaFile("misc/sh_rounds.lua")
 AddCSLuaFile("misc/sh_claim.lua")
 AddCSLuaFile("notifications/sh_notifications.lua")
 
+include("misc/sh_rounds.lua")
 include("shared.lua")
 include("misc/sh_claim.lua")
 include("cl_hud.lua")

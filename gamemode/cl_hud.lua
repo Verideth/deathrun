@@ -6,7 +6,10 @@ local round_start_time = 540
 timer_on = false
 
 timer.Create("hud_round_time_timer", 1, round_start_time, function()
-    timer_on = true
+    if (timer_on == false) then
+        hud_round_time = 0
+        timer_on = true
+    end
 
     if (timer_on == true) then
         hud_round_time = hud_round_time + 1
@@ -23,21 +26,39 @@ function draw_crosshair(x, y)
 end
 
 function draw_claim_text(ply)
-    local ent = ply:GetEyeTraceNoCursor().Entity
+    local ent = ply:GetEyeTrace().Entity
 
-    if (ent:GetClass() == "func_button") then
+    if (ent:GetClass() == "class C_BaseEntity") then
+        if (ply:KeyPressed(KEY_F)) then
+            ent.is_claimed = true
+            ply.claimed_ent = ent
+            ent.claimed_ply = ply
+        end
+
         if (ent.is_claimed == false) then
             surface.SetTextPos(ScrW() / 2 - 15, ScrH() / 2 - 35)
-            surface.SetFont("CloseCaption_Normal")
+            surface.SetFont("HudHintTextLarge")
             surface.SetTextColor(Color(20, 200, 20, 255))
             surface.DrawText("UNCLAIMED BUTTON")
 
+            surface.SetFont("HudHintTextLarge")
+            surface.SetTextColor(Color(150, 100, 100, 255))
             surface.SetTextPos(ScrW() / 2 + 5, ScrH() / 2 - 35)
             surface.DrawText("(PRESS F TO CLAIM)")
-            surface.SetFont("CloseCaption_Normal")
-            surface.SetTextColor(Color(150, 100, 100, 255))
         end
 
+
+        if (ent.is_claimed == true and
+        ent.claimed_ply == ply and
+        ply.claimed_ent == ent) then
+            surface.SetFont("HudHintTextLarge")
+            surface.SetTextColor(Color(150, 100, 200, 255))
+            surface.SetTextPos(ScrW() / 2 + 5, ScrH() / 2 - 35)
+            surface.DrawText("YOU CURRENTLY OWN THIS BUTTON")
+        end
+    end
+
+    if (ent.is_claimed and ent.claimed_ply != ply) then
         surface.SetTextPos(ScrW() / 2 - 15, ScrH() / 2 - 35)
         surface.SetFont("CloseCaption_Normal")
         surface.SetTextColor(Color(200, 20, 20, 255))
@@ -61,8 +82,6 @@ function draw_target_name(ply)
 end
 
 function draw_player_hud()
-    local ply = LocalPlayer()
-
     -- backdrop
     surface.SetDrawColor(30, 30, 30, 255)
     surface.DrawRect(10, ScrH() - 110, 402, 97)
@@ -74,16 +93,16 @@ function draw_player_hud()
     surface.DrawRect(16, ScrH() - 103, 391, 40)
 
     surface.SetDrawColor(20, 20, 20, 255)
-    surface.DrawRect(19, ScrH() - 99, w, 32)
+    surface.DrawRect(19, ScrH() - 99, w, 33)
 
     surface.SetDrawColor(255, 20, 20, 255)
-    surface.DrawRect(19, ScrH() - 99, w * (ply:Health() / 100), 33)
+    surface.DrawRect(19, ScrH() - 99, w * (LocalPlayer():Health() / 100), 33)
 
     surface.SetDrawColor(255, 150, 150, 255)
-    surface.DrawRect(19, ScrH() - 99, w * (ply:Health() / 100), 13)
+    surface.DrawRect(19, ScrH() - 99, w * (LocalPlayer():Health() / 100), 13)
 
-    local text_health = string.format("HEALTH %iHP", ply:Health())
-    surface.SetTextPos(26, ScrH() - 97)
+    local text_health = string.format("HEALTH %iHP", LocalPlayer():Health())
+    surface.SetTextPos(26, ScrH() - 94)
     surface.SetFont("ScoreboardDefault")
     surface.SetTextColor(Color(255, 255, 255, 255))
     surface.DrawText(text_health)
@@ -95,7 +114,7 @@ function draw_player_hud()
     surface.SetDrawColor(30, 30, 30, 255)
     surface.DrawRect(19, ScrH() - 57, 160, 34)
 
-    local text_vel = string.format("SPEED %iU/S", ply:GetVelocity():Length())
+    local text_vel = string.format("SPEED %iU/S", LocalPlayer():GetVelocity():Length())
     surface.SetTextPos(26, ScrH() - 52 )
     surface.SetFont("ScoreboardDefault")
     surface.SetTextColor(Color(255, 255, 255, 255))
@@ -111,7 +130,7 @@ function draw_player_hud()
     surface.SetTextPos(194, ScrH() - 55)
     surface.SetFont("ChatFont")
     surface.SetTextColor(Color(255, 255, 255, 255))
-    surface.DrawText(ply:GetName())
+    surface.DrawText(LocalPlayer():GetName())
 
     surface.SetTextPos(194, ScrH() - 40)
     surface.SetFont("ChatFont")
@@ -119,33 +138,21 @@ function draw_player_hud()
     surface.DrawText(game.GetMap())
 
     -- round time
-    if (DRF_CURRENT_GAMESTATE == DRF_GAMESTATE_ROUND) then
-        timer_on = true
+    surface.SetDrawColor(255, 255, 255, 255)
+    surface.DrawRect(ScrW() / 2 - 103, 15, 220, 20)
 
-        surface.SetDrawColor(255, 255, 255, 255)
-        surface.DrawRect(ScrW() / 2 - 103, 15, 220, 20)
+    surface.SetDrawColor(30, 30, 30, 255)
+    surface.DrawRect(ScrW() / 2 - 100, 17, 214, 16)
 
-        surface.SetDrawColor(30, 30, 30, 255)
-        surface.DrawRect(ScrW() / 2 - 100, 17, 214, 16)
-
-        surface.SetTextPos(ScrW() / 2 - 68, 18)
-        surface.SetFont("HudHintTextLarge")
-        surface.SetTextColor(Color(255, 255, 255, 255))
-        surface.DrawText("TIME REMAINING: " .. (round_start_time - hud_round_time))
-
-        if (hud_round_time == round_start_time) then
-            hud_round_time = 1
-            timer_on = false
-            timer.Start("hud_round_time_timer")
-        end
-    else
-        timer_off = false
-    end
+    surface.SetTextPos(ScrW() / 2 - 68, 18)
+    surface.SetFont("HudHintTextLarge")
+    surface.SetTextColor(Color(255, 255, 255, 255))
+    surface.DrawText("TIME REMAINING: " .. (round_start_time - hud_round_time))
 
     -- view player box
-    draw_target_name(ply)
+    draw_target_name(LocalPlayer())
 
     -- deathrun claim
-    draw_claim_text(ply)
+    draw_claim_text(LocalPlayer())
 end
 end

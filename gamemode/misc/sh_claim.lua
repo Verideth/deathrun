@@ -6,22 +6,14 @@ local claimed_buttons = {}
 local initialized = false
 local use = 0
 
-function init_claim_system()
-    if (initialized == false) then
-        initialized = true
-        return true
-    end
-
-    return true
-end
-
 function do_claim(ply, ent)
     if (ply:Alive() and
     (ply:Team() == TEAM_DEATH)) then
         for k, v in pairs(ents.FindByClass("func_button")) do
-            if (v == ply:GetViewEntity()) then
+            if (v == ply:GetEyeTraceNoCursor().Entity) then
                 ply.has_claimed = true
                 ent.is_claimed = true
+                ply:ChatPrint("[DRF MESSAGE]: YOU CLAIMED THIS BUTTON")
                 table.Add(claimed_buttons, v)
             end
         end
@@ -62,34 +54,31 @@ local claim_tick = function(ply)
             end
 
             if (ply.has_claimed == true) then
-                ply.claimed_ent = ent
-                ent.claimed_ply = ply
-
-                print("currently true")
                 if (claimed_buttons[iter] == v) then
-                    if (ply:KeyPressed(IN_RELOAD)) then
-                        un_claim(ply, ent)
-                        ply:ChatPrint("[DRF MESSAGE]: YOU UNCLAIMED " .. ent:GetName())
-                    elseif (ply:KeyPressed(IN_USE)) then
-                        ply:ChatPrint("[DRF MESSAGE]: YOU USED YOUR CLAIMED BUTTON")
-                        ent:Use()
+                    ent = v
+                    ply.claimed_ent = ent
+                    ent.claimed_ply = ply
+
+                    if (ent.is_claimed == true and
+                    (ply.claimed_ent == ent) and (ent.claimed_ply == ply)) then
+                        if (ply:KeyPressed(IN_RELOAD)) then
+                            ply:ChatPrint("[DRF MESSAGE]: YOU UNCLAIMED THIS BUTTON")
+                            un_claim(ply, ent)
+                        elseif (ply:KeyPressed(IN_USE)) then
+                            ply:ChatPrint("[DRF MESSAGE]: YOU USED YOUR CLAIMED BUTTON")
+                            ent:Use()
+                            un_claim(ply, ent)
+                        end
+                    end
+
+                    if (ent.is_claimed == true and
+                    (ply.claimed_ent != ent) or (ent.claimed_ply != ply) and
+                    (ent == v)) then
+                        ply:ChatPrint("[DRF MESSAGE]: THIS BUTTON IS CLAIMED BY SOMEBODY ELSE!")
+                        v:SetMaterial("materials/gm_construct/grass-sand_13.vmt", true)
                     end
                 end
-
-                if (ent.is_claimed == true and
-                (ply.claimed_ent != ent) or (ent.claimed_ply != ply)) then
-                    ply:ChatPrint("[DRF MESSAGE] this button is claimed by somebody else!")
-                    ent:SetMaterial("gm_construct/grass-sand_13.vmt", true)
-                end
-
-                if (ent.is_claimed == true and
-                (ply.claimed_ent != ent) or (ent.claimed_ply != ply)) then
-                    ply:ChatPrint("[DRF MESSAGE] this button is claimed by somebody else!")
-                    ent:SetMaterial("gm_construct/grass-sand_13.vmt", true)
-                end
             end
-
-            ent:SetMaterial(ent_mat)
         end
     end
 end
@@ -98,14 +87,17 @@ local claim_use = function(ply, ent)
     ply = net.ReadEntity()
     ent = net.ReadEntity()
 
-    if (ply:Team() == TEAM_DEATH) then
-        local target = ply:GetEyeTraceNoCursor().Entity
+    if (IsValid(ply) and IsValid(ent)) then
+        if (ply:Team() == TEAM_DEATH) then
+            local target = ply:GetEyeTraceNoCursor().Entity
 
-        if ((ply:Alive() == true) and (target:GetClass() == "func_button")) then
-            target.is_claimed = true
-            print("CLAIMED " .. ent:GetClass())
-            do_claim(ply, ent)
-            claim_tick(ply)
+            if ((ply:Alive() == true) and
+            (target.is_claimed == false) and
+            (target:GetClass() == "func_button")) then
+                target.is_claimed = true
+                do_claim(ply, ent)
+                claim_tick(ply)
+            end
         end
     end
 end
@@ -116,11 +108,12 @@ end
 if CLIENT then
 function think_button_claim(ply, ent)
     if (ply:KeyReleased(IN_ALT1)) then
-        print("logging")
         net.Start("claim_use_all")
         net.WriteEntity(ply)
         net.WriteEntity(ent)
         net.SendToServer()
     end
+
+    ent:SetMaterial(ent_mat)
 end
 end

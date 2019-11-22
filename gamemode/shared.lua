@@ -17,7 +17,7 @@ function GM:CreateTeams()
 
     team.SetSpawnPoint(TEAM_RUNNERS, "info_player_counterterrorist")
     team.SetSpawnPoint(TEAM_DEATH, "info_player_terrorist")
-    team.SetSpawnPoint(TEAM_SPECTATOR, "worldspawn")
+    team.SetSpawnPoint(TEAM_SPECTATOR, "info_player_counterterrorist")
 end
 
 function GM:PhysgunPickup(ply, entity)

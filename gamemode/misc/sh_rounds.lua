@@ -1,4 +1,9 @@
-print("Loaded rounds system.")
+print("[DRF] loaded rounds system.")
+
+DRF_CURRENT_GAMESTATE = 0
+DRF_GAMESTATE_WAITING = 1
+DRF_GAMESTATE_ROUND = 2
+DRF_GAMESTATE_NULL = -1 -- not implemented
 
 DEATHRUN_ADDONS = DEATHRUN_ADDONS or {} -- preserve the table
 
@@ -25,9 +30,7 @@ if SERVER then
     timer.Create("check_game", 5, 0, function()
         if (ran_timer_already == false
         and #player.GetAll() >= 2) then
-            print("TIMER HIT (check_game)")
             check_death_to_runner()
-            ran_timer_already = true
         end
     end)
 
@@ -66,19 +69,36 @@ if SERVER then
         	if (#player.GetAll() >= 2 and #player.GetAll() <= 5) then
                 timer.Stop("check_game")
                 PrintMessage(HUD_PRINTCENTER, "[DRF MESSAGE]: STARTING ROUND " .. round_count)
-        		local selected_one_death = math.random(1, #player.GetAll())
 
         		for _, v in pairs(player.GetAll()) do
         			if (player.GetAll()[selected_one_death] == v) then -- checks if the selected player is equivalent to the iteration (if the player is next up in the for loop)
         				v:SetTeam(TEAM_DEATH)
                         v:Spawn()
+                        v:ResetHull()
+                        print("Set " .. v:Nick() .. " to team(" ..  v:Team() .. ")")
                     end
 
                     if (player.GetAll()[selected_one_death] != v) then
                         v:SetTeam(TEAM_RUNNERS)
                         v:Spawn()
+                        v:ResetHull()
+                        print("Set " .. v:Nick() .. " to team(" ..  v:Team() .. ")")
                     end
         		end
+
+                local num_deaths = #team.GetPlayers(TEAM_DEATH)
+
+                if (num_deaths < 1) then
+                    local set_death = math.random(1, #player.GetAll())
+
+                    for _, v in pairs(player.GetAll()) do
+                        if (player.GetAll()[set_death] == v) then
+                            v:SetTeam(TEAM_DEATH)
+                            v:Spawn()
+                            v:ResetHull()
+                        end
+                    end
+                end
 
                 has_checked_players_balance = true
                 print("Finished checking death to runners!")
@@ -97,13 +117,15 @@ if SERVER then
         			if (player.GetAll()[selected_two_death_one] == v or
                     player.GetAll()[selected_two_death_two] == v) then -- checks if the selected player is equivalent to the iteration (if the player is next up in the for loop)
         				v:SetTeam(TEAM_DEATH)
-                        v:Respawn()
+                        v:Spawn()
+                        v:ResetHull()
                     end
 
                     if (player.GetAll()[selected_two_death_one] != v or
                     player.GetAll()[selected_two_death_two] != v) then
                         v:SetTeam(TEAM_RUNNERS)
-                        v:Respawn()
+                        v:Spawn()
+                        v:ResetHull()
                     end
         		end
 
@@ -112,6 +134,7 @@ if SERVER then
                 timer.Stop("hud_round_time_timer")
                 timer.Start("hud_round_time_timer")
                 DRF_CURRENT_GAMESTATE = DRF_GAMESTATE_ROUND
+                print(tostring(#player.GetAll()))
         		return true
         	end
 
@@ -126,14 +149,16 @@ if SERVER then
                     player.GetAll()[selected_three_death_two] == v or
                     player.GetAll()[selected_three_death_three] == v) then -- checks if the selected player is equivalent to the iteration (if the player is next up in the for loop)
         				v:SetTeam(TEAM_DEATH)
-                        v:Respawn()
+                        v:Spawn()
+                        v:ResetHull()
                     end
 
                     if (player.GetAll()[selected_three_death_one] != v or
                     player.GetAll()[selected_three_death_two] != v or
                     player.GetAll()[selected_three_death_three] != v) then
                         v:SetTeam(TEAM_RUNNERS)
-                        v:Respawn()
+                        v:Spawn()
+                        v:ResetHull()
                     end
         		end
 
@@ -159,7 +184,8 @@ if SERVER then
                     player.GetAll()[selected_four_death_three] == v or
                     player.GetAll()[selected_four_death_four] == v) then
         				v:SetTeam(TEAM_DEATH)
-        				v:Respawn()
+        				v:Spawn()
+                        v:ResetHull()
         			end
 
                     if (player.GetAll()[selected_four_death_one] != v or
@@ -167,8 +193,8 @@ if SERVER then
                     player.GetAll()[selected_four_death_three] != v or
                     player.GetAll()[selected_four_death_four] != v) then
                         v:SetTeam(TEAM_RUNNERS)
-                        v:Kill()
-                        v:Respawn()
+                        v:Spawn()
+                        v:ResetHull()
                     end
         		end
 
@@ -197,7 +223,8 @@ if SERVER then
                     player.GetAll()[selected_five_death_four] == v or
                     player.GetAll()[selected_five_death_five] == v) then
         				v:SetTeam(TEAM_DEATH)
-        				v:Respawn()
+        				v:Spawn()
+                        v:ResetHull()
         			end
 
                     if (player.GetAll()[selected_five_death_one] != v or
@@ -206,8 +233,8 @@ if SERVER then
                     player.GetAll()[selected_five_death_four] != v or
                     player.GetAll()[selected_five_death_five] != v) then
                         v:SetTeam(TEAM_RUNNERS)
-                        v:Kill()
-                        v:Respawn()
+                        v:Spawn()
+                        v:ResetHull()
                     end
         		end
 
@@ -220,6 +247,7 @@ if SERVER then
         	end
         end
 
+        ran_timer_already = false
     	return false
     end
 
@@ -227,6 +255,7 @@ if SERVER then
         has_checked_players_balance = false
 
         if (has_checked_players_balance == false) then
+            DRF_CURRENT_GAMESTATE = DRF_GAMESTATE_WAITING
             check_death_to_runner()
         end
     end
@@ -262,7 +291,7 @@ if SERVER then
 
                     votedMapName = string.Left(votedMapName, string.len(votedMapName))
 
-                    PrintMessage(HUD_PRINTTALK, "Next map is " .. votedMapName, DEATHRUN_ADDONS.Notify.Enums["NORMAL_TITLE"])
+                    PrintMessage(HUD_PRINTTALK, "Next map is " .. votedMapName)
                     timer.Simple(6, function()
                         RunConsoleCommand("changelevel", votedMapName)
                     end)
@@ -272,50 +301,55 @@ if SERVER then
     end
 
 	hook.Add("PlayerDeath", "roundsSystemPlayerDeath", function(victim, inflictor, attacker)
+        if (#player.GetAll() <= 1) then
+            DRF_CURRENT_GAMESTATE = DRF_GAMESTATE_WAITING
+        end
+
         if (DRF_CURRENT_GAMESTATE == DRF_GAMESTATE_ROUND) then
         	if victim:Team() == TEAM_RUNNERS then -- switch the player to the other team
     			victim:SetTeam(TEAM_SPECTATOR)
-                victim:Spectate(OBS_MODE_ROAMING)
-    		elseif victim:Team() == TEAM_DEATH then
+    		end
+
+            if victim:Team() == TEAM_DEATH then
     			victim:SetTeam(TEAM_SPECTATOR)
-                victim:Spectate(OBS_MODE_ROAMING)
     		end
 
     		-- how many runners are still alive?
     		local runners = team.GetPlayers(TEAM_RUNNERS)
             local deaths = team.GetPlayers(TEAM_DEATH)
-    		local runnersLeftAlive = #runners -- how many players are left in the runners team?
-            local deathLeftAlive = #deaths
 
-    		if (runnersLeftAlive < 1) then -- no more runners left alive, new round.
+    		if (#runners < 1) then -- no more runners left alive, new round.
     			--DEATHRUN_ADDONS.Notify.NotifyAll("Death(s) win!", 2)
                 round_count = round_count + 1
 
                 if (round_count > max_rounds) then
                     if (runner_points > death_points) then
             			PrintMessage(HUD_PRINTCENTER, "Runner(s) win the game! Starting next map...")
-                        timer.Start("check_game")
                     end
 
                     if (death_points > runner_points) then
                         PrintMessage(HUD_PRINTCENTER, "Death(s) win this game! Starting next map...")
-                        timer.Start("check_game")
                     end
 
+                    PrintMessage(HUD_PRINTCENTER, "[DRF MESSAGE]: CHANGING MAP....")
+
         			call_mapvote_timer()
+                    return true
                 end
 
                 death_points = death_points + 1
                 print("round_count = " .. round_count)
+                DRF_CURRENT_GAMESTATE = DRF_GAMESTATE_WAITING
 
-                for k, v in pairs(player.GetAll()) do
+                for _, v in pairs(player.GetAll()) do
+                    v:SetTeam(TEAM_RUNNERS)
                     v:Respawn()
                 end
 
                 cleanup_round()
     		end
 
-            if (deathLeftAlive < 1) then -- no more deaths
+            if (#deaths < 1) then -- no more deaths
                 round_count = round_count + 1
 
                 if (round_count > max_rounds) then
@@ -327,22 +361,18 @@ if SERVER then
                         PrintMessage(HUD_PRINTTALK, "[DRF MESSAGE]: Death(s) win this game! Starting next map...")
                     end
 
-                    runner_points = runner_points + 1
-                    print("round_count = " .. round_count)
-
-                    for k, v in pairs(player.GetAll()) do
-                        v:Spectate(OBS_MODE_ROAMING)
-                    end
-
                     PrintMessage(HUD_PRINTCENTER, "[DRF MESSAGE]: CHANGING MAP....")
 
                     call_mapvote_timer()
+                    return true
                 end
 
                 runner_points = runner_points + 1
                 print("round_count = " .. round_count)
+                DRF_CURRENT_GAMESTATE = DRF_GAMESTATE_WAITING
 
-                for k, v in pairs(player.GetAll()) do
+                for _, v in pairs(player.GetAll()) do
+                    v:SetTeam(TEAM_RUNNERS)
                     v:Respawn()
                 end
 
@@ -441,5 +471,4 @@ elseif CLIENT then
 			DEATHRUN_ADDONS.Rounds.PlayerAvatarPanels[v] = voteSectionScroll
 		end
 	end)
-
 end

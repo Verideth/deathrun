@@ -1,4 +1,4 @@
-print("Loaded notifications system.")
+print("[DRF] loaded notifications system.")
 
 DEATHRUN_ADDONS = DEATHRUN_ADDONS or {} -- preserve the table
 

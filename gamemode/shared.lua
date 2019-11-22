@@ -5,10 +5,13 @@ GM.Website = "N/A"
 
 TEAM_RUNNERS = 2
 TEAM_DEATH = 3
+TEAM_WAITING = -1
 drf_maps = {}
 
+include("misc/sh_rounds.lua")
+
 function GM:CreateTeams()
-    team.SetUp(TEAM_SPECTATOR, "Spectator", Color(100, 100, 100, 200), false)
+    team.SetUp(TEAM_SPECTATOR, "Spectator", Color(25, 100, 100, 255), false)
     team.SetUp(TEAM_RUNNERS, "Runners", Color(100, 100, 220, 255), false)
     team.SetUp(TEAM_DEATH, "Death", Color(220, 100, 100, 255), false)
 

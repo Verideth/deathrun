@@ -1,9 +1,9 @@
-if SERVER then print("loaded hud interface") end
+if SERVER then print("[DRF] loaded hud interface") end
 
 if CLIENT then
 local hud_round_time = 0
 local round_start_time = 540
-local timer_on = false
+timer_on = false
 
 timer.Create("hud_round_time_timer", 1, round_start_time, function()
     timer_on = true

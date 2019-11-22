@@ -1,13 +1,13 @@
 if SERVER then
-print("loaded claim system")
-util.AddNetworkString("claim_data")
+print("[DRF] loaded claim system")
+util.AddNetworkString("claim_use_all")
 
 local claimed_buttons = {}
 local initialized = false
+local use = 0
 
 function init_claim_system()
     if (initialized == false) then
-        net.Receive("claim_data", claim_think)
         initialized = true
         return true
     end
@@ -46,16 +46,26 @@ function un_claim(ply, ent)
     end
 end
 
-local claim_think = function(ply)
+local claim_tick = function(ply)
     local ent = ply:GetEyeTraceNoCursor().Entity
 
     if ((ply:Alive() and ent:GetClass() == "func_button")) then
         local iter = 0
         local ent_mat = ent:GetMaterial()
+        ply.has_claimed = true
 
         for k, v in pairs(ents.FindByClass("func_button")) do
             iter = iter + 1
+
+            if (ply.has_claimed == false) then
+                ply.has_claimed = true
+            end
+
             if (ply.has_claimed == true) then
+                ply.claimed_ent = ent
+                ent.claimed_ply = ply
+
+                print("currently true")
                 if (claimed_buttons[iter] == v) then
                     if (ply:KeyPressed(IN_RELOAD)) then
                         un_claim(ply, ent)
@@ -66,26 +76,51 @@ local claim_think = function(ply)
                     end
                 end
 
-                if (ent.is_claimed == true) then
+                if (ent.is_claimed == true and
+                (ply.claimed_ent != ent) or (ent.claimed_ply != ply)) then
                     ply:ChatPrint("[DRF MESSAGE] this button is claimed by somebody else!")
-                    entx:SetMaterial("gm_construct/grass-sand_13.vmt", true)
+                    ent:SetMaterial("gm_construct/grass-sand_13.vmt", true)
+                end
+
+                if (ent.is_claimed == true and
+                (ply.claimed_ent != ent) or (ent.claimed_ply != ply)) then
+                    ply:ChatPrint("[DRF MESSAGE] this button is claimed by somebody else!")
+                    ent:SetMaterial("gm_construct/grass-sand_13.vmt", true)
                 end
             end
 
-            ent:SetMaterial(ent_mat.GetMaterial())
+            ent:SetMaterial(ent_mat)
         end
     end
 end
 
-function use(ply, ent, mode) -- goes inside the PlayerUse hook
+local claim_use = function(ply, ent)
+    ply = net.ReadEntity()
+    ent = net.ReadEntity()
+
     if (ply:Team() == TEAM_DEATH) then
         local target = ply:GetEyeTraceNoCursor().Entity
 
-        if ((ply:Alive() == true) and (ent:GetClass() == "func_button")) then
+        if ((ply:Alive() == true) and (target:GetClass() == "func_button")) then
             target.is_claimed = true
-
+            print("CLAIMED " .. ent:GetClass())
             do_claim(ply, ent)
+            claim_tick(ply)
         end
+    end
+end
+
+net.Receive("claim_use_all", claim_use)
+end
+
+if CLIENT then
+function think_button_claim(ply, ent)
+    if (ply:KeyReleased(IN_ALT1)) then
+        print("logging")
+        net.Start("claim_use_all")
+        net.WriteEntity(ply)
+        net.WriteEntity(ent)
+        net.SendToServer()
     end
 end
 end

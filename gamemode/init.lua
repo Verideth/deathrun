@@ -27,20 +27,15 @@ function GM:PlayerSpawn(ply)
 
     if (ply:Team() == TEAM_SPECTATOR) then
         ply:Spectate(OBS_MODE_ROAMING)
-
         ply:StripWeapons()
-        ply:SetWalkSpeed(300)
-        ply:SetRunSpeed(1000)
         return nil
     end
 
     ply:SetNoCollideWithTeammates(true)
     ply:Give("weapon_crowbar")
     ply:StripWeapon("weapon_knife")
-    
-    -- debug purposes
-    local team = math.random(2,3)
-    ply:SetTeam(team)
+
+    timer.Start("check_game")
 
     local model = math.random(0, 20)
     if (ply:Team() == TEAM_RUNNERS) then
@@ -137,7 +132,7 @@ function GM:PlayerSpawn(ply)
         ply:SetModel("models/player/skeleton.mdl")
         ply:SetWalkSpeed(500)
         ply:SetRunSpeed(750)
-        ply:SetJumpPower(300)
+        ply:SetJumpPower(340)
     end
 
     ply:SetHealth(100)
@@ -159,7 +154,7 @@ function GM:PlayerSpawn(ply)
 end
 
 function GM:PlayerSwitchFlashlight(ply, enabled)
-    if (ply:KeyPressed(KEY_F)) then
+    if (ply:KeyPressed(IN_USE)) then
         enabled = true
         ply:Flashlight(true)
         print("Flashlight is on!")
@@ -206,11 +201,7 @@ function GM:PlayerLoadout(ply)
 end
 
 function GM:GetFallDamage(ply, speed)
-    if (ply:Team() == TEAM_RUNNERS) then
-        return math.max(0, math.ceil(0.2418 * speed - 141.75))
-    end
-
-    return 0
+	return (speed / 8)
 end
 
 function GM:CanPlayerSuicide(ply)

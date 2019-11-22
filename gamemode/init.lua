@@ -1,16 +1,19 @@
-if SERVER then
 AddCSLuaFile("cl_hud.lua")
 AddCSLuaFile("cl_init.lua")
 AddCSLuaFile("shared.lua")
 AddCSLuaFile("misc/sh_rounds.lua")
 AddCSLuaFile("misc/sh_claim.lua")
+AddCSLuaFile("q_menu/sh_q_menu.lua")
 AddCSLuaFile("notifications/sh_notifications.lua")
 AddCSLuaFile("team_switch/sh_team_switch.lua")
+
+DEATHRUN_ADDONS = {}
 
 include("shared.lua")
 include("notifications/sh_notifications.lua")
 include("misc/sh_rounds.lua")
 include("misc/sh_claim.lua")
+include("q_menu/sh_q_menu.lua")
 include("team_switch/sh_team_switch.lua")
 
 function GM:Initialize()
@@ -21,12 +24,10 @@ function GM:PlayerSpawn(ply)
     timer.Stop("hud_round_time_timer")
     timer.Start("hud_round_time_timer")
 
-
     if (ply:Team() == TEAM_SPECTATOR) then
         ply:Spectate(OBS_MODE_ROAMING)
         ply:StripWeapons()
     end
-
 
     -- Select the correct team for a player that has just spawned.
     local deathPlayers = team.GetPlayers(TEAM_DEATH)
@@ -232,5 +233,4 @@ function GM:CanPlayerSuicide(ply)
     if (ply:Team() == TEAM_SPECTATOR) then
         return false
     end
-end
 end

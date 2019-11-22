@@ -81,8 +81,27 @@ elseif CLIENT then
     end
 
     DEATHRUN_ADDONS.TeamSwitch.GetQMenuDermaPanel = function(pDermaSheet)
-        local qMenuPanel = vgui.Create("DPanel", pDermaSheet)
+        local qMenuPanel = vgui.Create("DScrollPanel", pDermaSheet)
         qMenuPanel:Dock(FILL)
+
+        local buttonList = vgui.Create( "DIconLayout", qMenuPanel )
+        buttonList:Dock( FILL )
+        buttonList:SetSpaceY( 5 ) -- Sets the space in between the panels on the Y Axis by 5
+        buttonList:SetSpaceX( 5 ) -- Sets the space in between the panels on the X Axis by 5
+
+        local deathsButton = buttonList:Add( "DButton" ) -- Add DPanel to the DIconLayout
+        deathsButton:SetText( "Deaths" )
+        deathsButton:Dock(TOP)
+        deathsButton.DoClick = function()				// A custom function run when clicked ( note the . instead of : )
+            DEATHRUN_ADDONS.TeamSwitch.SwitchToDeath()
+        end
+
+        local runnersButton = buttonList:Add( "DButton" ) -- Add DPanel to the DIconLayout
+        runnersButton:SetText( "Runners" )
+        runnersButton:Dock(TOP)
+        runnersButton.DoClick = function()
+            DEATHRUN_ADDONS.TeamSwitch.SwitchToRunners()
+        end
 
         return qMenuPanel
     end

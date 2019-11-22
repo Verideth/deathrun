@@ -5,16 +5,13 @@ AddCSLuaFile("shared.lua")
 AddCSLuaFile("misc/sh_rounds.lua")
 AddCSLuaFile("misc/sh_claim.lua")
 AddCSLuaFile("notifications/sh_notifications.lua")
---AddCSLuaFile("modules/rounds_system/sh_rounds.lua")
---AddCSLuaFile("modules/sounds_system/sh_sounds.lua")
---AddCSLuaFile("modules/notification_system/sh_notifications.lua")
---AddCSLuaFile("modules/weapons_system/sh_weapons.lua")
+AddCSLuaFile("team_switch/sh_team_switch.lua")
 
 include("shared.lua")
 include("notifications/sh_notifications.lua")
 include("misc/sh_rounds.lua")
 include("misc/sh_claim.lua")
---include("modules/rounds_system/sh_rounds.lua")
+include("team_switch/sh_team_switch.lua")
 
 function GM:Initialize()
 	DRF_CURRENT_GAMESTATE = DRF_GAMESTATE_WAITING

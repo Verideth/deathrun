@@ -1,18 +1,8 @@
-if SERVER then
-end
-
-if CLIENT then
-AddCSLuaFile("cl_hud.lua")
-AddCSLuaFile("cl_init.lua")
-AddCSLuaFile("shared.lua")
-AddCSLuaFile("misc/sh_rounds.lua")
-AddCSLuaFile("misc/sh_claim.lua")
-AddCSLuaFile("notifications/sh_notifications.lua")
-
-include("misc/sh_rounds.lua")
 include("shared.lua")
 include("misc/sh_claim.lua")
 include("cl_hud.lua")
+include("misc/sh_rounds.lua")
+include("team_switch/sh_team_switch.lua")
 
 local hide = {
 	["CHudBattery"] = true,
@@ -44,4 +34,3 @@ end
 hook.Add("HUDShouldDraw", "hide_hud", function(name)
 	if (hide[name]) then return false end
 end)
-end

@@ -80,11 +80,15 @@ elseif CLIENT then
         net.SendToServer()
     end
 
-    DEATHRUN_ADDONS.TeamSwitch.GetQMenuSheet = function()
+    DEATHRUN_ADDONS.TeamSwitch.GetQMenuDermaPanel = function(pDermaSheet)
+        local qMenuPanel = vgui.Create("DPanel", pDermaSheet)
+        qMenuPanel:Dock(FILL)
 
+        return qMenuPanel
     end
 
-    DEATHRUN_ADDONS.TeamSwitch.GetQMenuSheetButtonInfo = function()
+    DEATHRUN_ADDONS.TeamSwitch.GetQMenuButtonInfo = function()
+        return { ButtonName = "Change Team", IconName = "icon16/tick.png" }
     end
 
 end

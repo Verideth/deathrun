@@ -14,16 +14,11 @@ if SERVER then
 
 elseif CLIENT then
 
-    DEATHRUN_ADDONS.Menu.IsOpen = false
     DEATHRUN_ADDONS.Menu.Sheets = {}
 
     hook.Add( "PlayerButtonDown", "openQMenu", function( ply, button )
-        if (button == KEY_Q) then
-            if DEATHRUN_ADDONS.Menu.IsOpen == false then -- only show the derma if its not open.
-                DEATHRUN_ADDONS.Menu.ShowQMenu()
-            end
-
-            DEATHRUN_ADDONS.Menu.IsOpen = true
+        if (button == KEY_Q) then 
+            DEATHRUN_ADDONS.Menu.ShowQMenu()
         end
     end )
 
@@ -43,7 +38,7 @@ elseif CLIENT then
         DEATHRUN_ADDONS.Menu.MainFrame:SetTitle("Q Menu")
         DEATHRUN_ADDONS.Menu.MainFrame:MakePopup()
 
-        local sheetsContainer = vgui.Create( "DColumnSheet", frame )
+        local sheetsContainer = vgui.Create( "DColumnSheet", DEATHRUN_ADDONS.Menu.MainFrame )
         sheetsContainer:Dock(FILL)
 
         -- these functions are defined in /team_switch/sh_team_switch.lua

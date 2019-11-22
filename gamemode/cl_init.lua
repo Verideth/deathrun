@@ -4,7 +4,7 @@ include("shared.lua")
 include("misc/sh_claim.lua")
 include("cl_hud.lua")
 include("misc/sh_rounds.lua")
-include("team_switch/sh_team_switch.lua")
+include("team_manager/sh_team_manager.lua")
 include("q_menu/sh_q_menu.lua")
 
 local hide = {

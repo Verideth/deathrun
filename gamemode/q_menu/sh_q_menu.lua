@@ -43,9 +43,9 @@ elseif CLIENT then
 
         -- these functions are defined in /team_switch/sh_team_switch.lua
         -- now we get every sheet defined in the entire program.
-        local teamSwitchDermaPanel = DEATHRUN_ADDONS.TeamSwitch.GetQMenuDermaPanel(sheetsContainer)
-        local teamSwitchButtonInfo = DEATHRUN_ADDONS.TeamSwitch.GetQMenuButtonInfo()
-        DEATHRUN_ADDONS.Menu.MainFrame.TeamSwitchSheet = sheetsContainer:AddSheet(teamSwitchButtonInfo.ButtonName, teamSwitchDermaPanel, teamSwitchButtonInfo.IconName)
+        local teamManagerDermaPanel = DEATHRUN_ADDONS.TeamManager.GetQMenuDermaPanel(sheetsContainer)
+        local teamManagerButtonInfo = DEATHRUN_ADDONS.TeamManager.GetQMenuButtonInfo()
+        DEATHRUN_ADDONS.Menu.MainFrame.TeamSwitchSheet = sheetsContainer:AddSheet(teamManagerButtonInfo.ButtonName, teamManagerDermaPanel, teamManagerButtonInfo.IconName)
     end
 
 end

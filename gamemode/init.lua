@@ -5,7 +5,7 @@ AddCSLuaFile("misc/sh_rounds.lua")
 AddCSLuaFile("misc/sh_claim.lua")
 AddCSLuaFile("q_menu/sh_q_menu.lua")
 AddCSLuaFile("notifications/sh_notifications.lua")
-AddCSLuaFile("team_switch/sh_team_switch.lua")
+AddCSLuaFile("team_manager/sh_team_manager.lua")
 
 DEATHRUN_ADDONS = {}
 
@@ -14,7 +14,7 @@ include("notifications/sh_notifications.lua")
 include("misc/sh_rounds.lua")
 include("misc/sh_claim.lua")
 include("q_menu/sh_q_menu.lua")
-include("team_switch/sh_team_switch.lua")
+include("team_manager/sh_team_manager.lua")
 
 function GM:Initialize()
 	DRF_CURRENT_GAMESTATE = DRF_GAMESTATE_WAITING

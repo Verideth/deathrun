@@ -19,7 +19,7 @@ elseif CLIENT then
 
     hook.Add( "PlayerButtonDown", "openQMenu", function( ply, button )
         if (button == KEY_Q) then
-            if DEATHRUN_ADDONS.Menu.IsOpen = false then -- only show the derma if its not open.
+            if DEATHRUN_ADDONS.Menu.IsOpen == false then -- only show the derma if its not open.
                 DEATHRUN_ADDONS.Menu.ShowQMenu()
             end
 

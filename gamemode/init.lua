@@ -23,10 +23,42 @@ end
 function GM:PlayerSpawn(ply)
     timer.Stop("hud_round_time_timer")
     timer.Start("hud_round_time_timer")
+    
 
     if (ply:Team() == TEAM_SPECTATOR) then
-        --ply:Spectate(OBS_MODE_ROAMING)
+        ply:Spectate(OBS_MODE_ROAMING)
         ply:StripWeapons()
+    end
+
+
+    -- Select the correct team for a player that has just spawned.
+    local deathPlayers = team.GetPlayers(TEAM_DEATH)
+    local runnerPlayers = team.GetPlayers(TEAM_RUNNERS)
+
+    -- to play a game, there must be at least 1 death player.
+    local numberOfDeathPlayers = table.Count(deathPlayers)
+    local numberOfRunnerPlayers = table.Count(runnerPlayers)
+
+    if (numberOfDeathPlayers < 1) then
+        -- this player who spawned, must go to the deaths team since nobody is in it.
+        ply:SetTeam(TEAM_DEATH)
+        DEATHRUN_ADDONS.Notify.NotifyAll(ply:Nick() .. " has joined the Death team!", DEATHRUN_ADDONS.Notify.Enums["LABEL"])
+    else
+        -- there must be 1 death for every 5 players.
+        -- number of deaths = number of players / 5
+
+        local maxNumberOfDeathPlayers = math.Round(numberOfRunnerPlayers / 5)
+        if (maxNumberOfDeathPlayers == 0) then maxNumberOfDeathPlayers = 1 end
+
+        -- if we need 2 death players, but we currently have 1, force this player to join the death team.
+        if (maxNumberOfDeathPlayers > numberOfDeathPlayers) then
+            ply:SetTeam(TEAM_DEATH)
+            DEATHRUN_ADDONS.Notify.NotifyAll(ply:Nick() .. " has joined the Death team!", DEATHRUN_ADDONS.Notify.Enums["LABEL"])
+        else
+            -- the number of death players has been reached, this player can now be a runner.
+            ply:SetTeam(TEAM_RUNNERS)
+            DEATHRUN_ADDONS.Notify.NotifyAll(ply:Nick() .. " has joined the Runners team!", DEATHRUN_ADDONS.Notify.Enums["LABEL"])
+        end
     end
 
     ply:SetNoCollideWithTeammates(true)

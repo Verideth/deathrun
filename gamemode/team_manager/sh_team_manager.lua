@@ -118,8 +118,8 @@ if SERVER then
         end
 
         ply:SetTeam(TEAM_RUNNERS)
-        ply:Kill()
-        ply:Spawn()
+        DEATHRUN_ADDONS.Notify.NotifyAll(ply:Nick() .. " has joined the Runners team!", DEATHRUN_ADDONS.Notify.Enums["LABEL"])
+            
     end
     
 elseif CLIENT then

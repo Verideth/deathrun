@@ -19,7 +19,7 @@ elseif CLIENT then
 
     hook.Add( "PlayerButtonDown", "openQMenu", function( ply, button )
         if (button == KEY_Q) then
-            if DEATHRUN_ADDONS.Menu.IsOpen = false then -- only show the derma if its not open.
+            if DEATHRUN_ADDONS.Menu.IsOpen == false then -- only show the derma if its not open.
                 DEATHRUN_ADDONS.Menu.ShowQMenu()
             end
 
@@ -44,7 +44,7 @@ elseif CLIENT then
         DEATHRUN_ADDONS.Menu.MainFrame:MakePopup()
 
         local sheetsContainer = vgui.Create( "DColumnSheet", frame )
-        sheetsContainer:Dock("FILL")
+        sheetsContainer:Dock(FILL)
 
         -- these functions are defined in /team_switch/sh_team_switch.lua
         -- now we get every sheet defined in the entire program.

@@ -28,7 +28,7 @@ if SERVER then
     end
 
     DEATHRUN_ADDONS.TeamSwitch.SwitchToDeath = function(ply)
-        if (ply:GetTeam() == TEAM_DEATH) then return end
+        if (ply:Team() == TEAM_DEATH) then return end
 
         -- Select the correct team for a player that has just spawned.
         local deathPlayers = team.GetPlayers(TEAM_DEATH)
@@ -59,7 +59,7 @@ if SERVER then
     end
 
     DEATHRUN_ADDONS.TeamSwitch.SwitchToRunners = function(ply)
-        if (ply:GetTeam() == TEAM_RUNNERS then return end
+        if (ply:Team() == TEAM_RUNNERS) then return end
 
         ply:SetTeam(TEAM_RUNNERS)
     end

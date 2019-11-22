@@ -119,7 +119,7 @@ if SERVER then
 
         ply:SetTeam(TEAM_RUNNERS)
         ply:Kill()
-        ply:spawn()
+        ply:Spawn()
     end
     
 elseif CLIENT then

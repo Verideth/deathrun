@@ -39,7 +39,7 @@ elseif CLIENT then
     net.Receive("DeathrunNotify", function()
         local message = net.ReadString()
         local mode = net.ReadInt(32)
-
+    
         DEATHRUN_ADDONS.Notify.Notify(message, mode)
     end)
 
@@ -52,16 +52,17 @@ elseif CLIENT then
 
 
     DEATHRUN_ADDONS.Notify.Notify = function(pMessage, pNotificationMode)
+    
         -- with :InvalidateLayout( true )
         DEATHRUN_ADDONS.Notify.backgroundPanel = vgui.Create( "DNotify" )
 
         local panel = vgui.Create("DPanel",  DEATHRUN_ADDONS.Notify.backgroundPanel)
 
         if (pNotificationMode == DEATHRUN_ADDONS.Notify.Enums["LABEL"]) then
-
+    
          -- Text label
 
-            panel:SetBackgroundColor(Color(c))
+            panel:SetBackgroundColor(Color(0,0,0,0))
 
             local lbl = vgui.Create( "DLabel", panel)
             lbl:SetText(pMessage)

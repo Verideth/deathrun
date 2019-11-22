@@ -1,10 +1,17 @@
 if SERVER then
-return false
 end
 
 if CLIENT then
-include("cl_hud.lua")
+AddCSLuaFile("cl_hud.lua")
+AddCSLuaFile("cl_init.lua")
+AddCSLuaFile("shared.lua")
+AddCSLuaFile("misc/sh_rounds.lua")
+AddCSLuaFile("misc/sh_claim.lua")
+AddCSLuaFile("notifications/sh_notifications.lua")
+
 include("shared.lua")
+include("misc/sh_claim.lua")
+include("cl_hud.lua")
 
 local hide = {
 	["CHudBattery"] = true,
@@ -16,6 +23,10 @@ local hide = {
 function GM:HUDPaint()
     draw_crosshair(ScrW() / 2, ScrH() / 2)
     draw_player_hud()
+end
+
+function GM:Think()
+
 end
 
 hook.Add("HUDShouldDraw", "hide_hud", function(name)

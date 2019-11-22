@@ -1,31 +1,32 @@
+if SERVER then
 AddCSLuaFile("cl_hud.lua")
 AddCSLuaFile("cl_init.lua")
 AddCSLuaFile("shared.lua")
+AddCSLuaFile("misc/sh_rounds.lua")
+AddCSLuaFile("misc/sh_claim.lua")
+AddCSLuaFile("notifications/sh_notifications.lua")
 --AddCSLuaFile("modules/rounds_system/sh_rounds.lua")
 --AddCSLuaFile("modules/sounds_system/sh_sounds.lua")
 --AddCSLuaFile("modules/notification_system/sh_notifications.lua")
 --AddCSLuaFile("modules/weapons_system/sh_weapons.lua")
 
 include("shared.lua")
+include("notifications/sh_notifications.lua")
+include("misc/sh_rounds.lua")
+include("misc/sh_claim.lua")
 --include("modules/rounds_system/sh_rounds.lua")
 
 function GM:Initialize()
-    drf_maps = file.Find("gm_", "maps")
 	DRF_CURRENT_GAMESTATE = DRF_GAMESTATE_WAITING
-end
-
-function GM:Initialize()
-    drf_maps = file.Find("*.bsp", "maps")
-	DRF_CURRENT_GAMESTATE = DRF_GAMESTATE_WAITING
+    init_claim_system()
 end
 
 function GM:PlayerSpawn(ply)
     timer.Stop("hud_round_time_timer")
-    if (ply:Team() == TEAM_SPECTATOR) then
-        ply:Spectate(OBS_MODE_CHASE)
+    timer.Start("hud_round_time_timer")
 
-        local player_to_spec = math.random(1, #player.GetAll())
-        ply:SpectateEntity(player_to_spec)
+    if (ply:Team() == TEAM_SPECTATOR) then
+        ply:Spectate(OBS_MODE_ROAMING)
 
         ply:StripWeapons()
         ply:SetWalkSpeed(300)
@@ -33,9 +34,10 @@ function GM:PlayerSpawn(ply)
         return nil
     end
 
-    ply:SetNoCollideWithTeammates(x)
+    ply:SetNoCollideWithTeammates(true)
     ply:Give("weapon_crowbar")
-
+    ply:StripWeapon("weapon_knife")
+    
     -- debug purposes
     local team = math.random(2,3)
     ply:SetTeam(team)
@@ -143,16 +145,16 @@ function GM:PlayerSpawn(ply)
     if (ply:Team() == TEAM_DEATH) then
         -- select a random spawn point
         local deathSpawnPoints = ents.FindByClass("info_player_terrorist")
+        table.insert(deathSpawnPoints, #deathSpawnPoints, ents.FindByClass("info_player_combine"))
         local randomIndex = math.Rand(1, table.Count(deathSpawnPoints))
-        local randomDeathSpawnPointEnt = deathSpawnPoints[randomIndex]
 
-        ply:SetPos(randomDeathSpawnPointEnt:GetPos())
+        ply:SetPos(deathSpawnPoints[1]:GetPos())
     elseif (ply:Team() == TEAM_RUNNERS) then
         local runnersSpawnPoints = ents.FindByClass("info_player_counterterrorist")
+        table.insert(runnersSpawnPoints, #runnersSpawnPoints, ents.FindByClass("info_player_rebel"))
         local randomIndex = math.Rand(1, table.Count(runnersSpawnPoints))
-        local randomRunnerSpawnPointEnt = runnersSpawnPoints[randomIndex]
 
-        ply:SetPos(randomRunnerSpawnPointEnt:GetPos())
+        ply:SetPos(runnersSpawnPoints[1]:GetPos())
     end
 end
 
@@ -160,6 +162,7 @@ function GM:PlayerSwitchFlashlight(ply, enabled)
     if (ply:KeyPressed(KEY_F)) then
         enabled = true
         ply:Flashlight(true)
+        print("Flashlight is on!")
         return true
     end
 end
@@ -208,4 +211,15 @@ function GM:GetFallDamage(ply, speed)
     end
 
     return 0
+end
+
+function GM:CanPlayerSuicide(ply)
+    if (ply:Team() == TEAM_DEATH) then
+        return false
+    end
+
+    if (ply:Team() == TEAM_SPECTATOR) then
+        return false
+    end
+end
 end

@@ -1,7 +1,9 @@
+if SERVER then print("loaded hud interface") end
+
+if CLIENT then
 local hud_round_time = 0
 local round_start_time = 540
 local timer_on = false
-t = 0
 
 timer.Create("hud_round_time_timer", 1, round_start_time, function()
     timer_on = true
@@ -18,6 +20,31 @@ function draw_crosshair(x, y)
     surface.DrawRect(x, y, 2, 9)
     surface.DrawRect(x - 7, y - 1, 9, 2)
     surface.DrawRect(x, y - 1, 9, 2)
+end
+
+function draw_claim_text(ply)
+    local ent = ply:GetEyeTraceNoCursor().Entity
+
+    if (ent:GetClass() == "func_button") then
+        if (ent.is_claimed == false) then
+            surface.SetTextPos(ScrW() / 2 - 15, ScrH() / 2 - 35)
+            surface.SetFont("CloseCaption_Normal")
+            surface.SetTextColor(Color(20, 200, 20, 255))
+            surface.DrawText("UNCLAIMED BUTTON")
+
+            surface.SetTextPos(ScrW() / 2 + 5, ScrH() / 2 - 35)
+            surface.DrawText("(PRESS F TO CLAIM)")
+            surface.SetFont("CloseCaption_Normal")
+            surface.SetTextColor(Color(150, 100, 100, 255))
+        end
+
+        surface.SetTextPos(ScrW() / 2 - 15, ScrH() / 2 - 35)
+        surface.SetFont("CloseCaption_Normal")
+        surface.SetTextColor(Color(200, 20, 20, 255))
+        surface.DrawText("CLAIMED BY ANOTHER DEATH")
+    end
+
+    return true
 end
 
 function draw_target_name(ply)
@@ -117,4 +144,8 @@ function draw_player_hud()
 
     -- view player box
     draw_target_name(ply)
+
+    -- deathrun claim
+    draw_claim_text(ply)
+end
 end

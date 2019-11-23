@@ -5,8 +5,7 @@ AddCSLuaFile("misc/sh_rounds.lua")
 AddCSLuaFile("misc/sh_claim.lua")
 AddCSLuaFile("q_menu/sh_q_menu.lua")
 AddCSLuaFile("notifications/sh_notifications.lua")
-AddCSLuaFile("team_manager/sh_team_manager.lua")
-
+-- not using team_manager, it was messing with my previous round system :-)
 
 DEATHRUN_ADDONS = {}
 
@@ -15,7 +14,7 @@ include("notifications/sh_notifications.lua")
 include("misc/sh_rounds.lua")
 include("misc/sh_claim.lua")
 include("q_menu/sh_q_menu.lua")
-include("team_manager/sh_team_manager.lua")
+-- not using team_manager, it was messing with my previous round system :-)
 
 function GM:Initialize()
 	DRF_CURRENT_GAMESTATE = DRF_GAMESTATE_WAITING
@@ -25,8 +24,13 @@ function GM:PlayerSpawn(ply)
     timer.Stop("hud_round_time_timer")
     timer.Start("hud_round_time_timer")
 
-    DEATHRUN_ADDONS.TeamManager.PlayerSpawned(ply)
-    
+    if (DRF_CURRENT_GAMESTATE == DRF_GAMESTATE_ROUND) then
+        ply:SetTeam(TEAM_SPECTATOR)
+        ply:Spectate(OBS_MODE_ROAMING)
+        ply:Spawn()
+        ply:StripWeapons()
+    end
+
     ply:SetNoCollideWithTeammates(true)
     ply:Give("weapon_crowbar")
     ply:StripWeapon("weapon_knife")
@@ -119,17 +123,15 @@ function GM:PlayerSpawn(ply)
 
         ply:SetWalkSpeed(250)
         ply:SetRunSpeed(300)
-        ply:SetJumpPower(220)
+        ply:SetJumpPower(250)
     end
 
     if (ply:Team() == TEAM_DEATH) then
         ply:SetModel("models/player/skeleton.mdl")
-        ply:SetWalkSpeed(500)
-        ply:SetRunSpeed(750)
-        ply:SetJumpPower(450)
+        ply:SetWalkSpeed(250)
+        ply:SetRunSpeed(800)
+        ply:SetJumpPower(350)
     end
-
-    ply:SetHealth(100)
 
     if (ply:Team() == TEAM_DEATH) then
         -- select a random spawn point
@@ -145,10 +147,8 @@ function GM:PlayerSpawn(ply)
 
         ply:SetPos(runnersSpawnPoints[1]:GetPos())
     end
-end
 
-function GM:PlayerDeath(ply, inflictor, attacker)
-    DEATHRUN_ADDONS.TeamManager.PlayerDeath(ply)
+    ply:SetHealth(100)
 end
 
 function GM:PlayerSwitchFlashlight(ply, enabled)

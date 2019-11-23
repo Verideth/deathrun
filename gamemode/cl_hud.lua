@@ -12,13 +12,11 @@ timer.Create("hud_round_time_timer", 1, round_start_time, function()
     end
 
     if (timer_on == true) then
-        hud_round_time = hud_round_time + 1
+        hud_round_time = hud_round_time
     end
 end)
 
-function draw_crosshair(x, y)
-    surface.SetDrawColor(110, 25, 250, 255)
-
+function draw_crosshair(x, y)surface.SetDrawColor(110, 25, 250, 255)
     surface.DrawRect(x, y - 9, 2, 9)
     surface.DrawRect(x, y, 2, 9)
     surface.DrawRect(x - 7, y - 1, 9, 2)
@@ -84,7 +82,7 @@ end
 function draw_player_hud()
     -- backdrop
     surface.SetDrawColor(30, 30, 30, 255)
-    surface.DrawRect(10, ScrH() - 110, 402, 97)
+    surface.DrawRect(10, ScrH() - 109, 402, 95)
 
     -- health
     local w = 385 -- base width
@@ -98,7 +96,7 @@ function draw_player_hud()
     surface.SetDrawColor(255, 20, 20, 255)
     surface.DrawRect(19, ScrH() - 99, w * (LocalPlayer():Health() / 100), 33)
 
-    surface.SetDrawColor(255, 150, 150, 255)
+    surface.SetDrawColor(255, 150, 150, 100)
     surface.DrawRect(19, ScrH() - 99, w * (LocalPlayer():Health() / 100), 13)
 
     local text_health = string.format("HEALTH %iHP", LocalPlayer():Health())

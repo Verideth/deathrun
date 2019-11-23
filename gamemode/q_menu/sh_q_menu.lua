@@ -10,15 +10,15 @@ end
 DEATHRUN_ADDONS.Menu = {}
 
 if SERVER then
-    
+
 
 elseif CLIENT then
 
     DEATHRUN_ADDONS.Menu.Sheets = {}
 
     hook.Add( "PlayerButtonDown", "openQMenu", function( ply, button )
-        if (button == KEY_Q) then 
-            DEATHRUN_ADDONS.Menu.ShowQMenu()
+        if (button == KEY_Q) then
+            
         end
     end )
 
@@ -31,7 +31,7 @@ elseif CLIENT then
         if (DEATHRUN_ADDONS.Menu.MainFrame != nil) then
             DEATHRUN_ADDONS.Menu.MainFrame:Remove()
         end
-        
+
         DEATHRUN_ADDONS.Menu.MainFrame = vgui.Create( "DFrame" )
         DEATHRUN_ADDONS.Menu.MainFrame:SetSize( 500, 300 )
         DEATHRUN_ADDONS.Menu.MainFrame:Center()

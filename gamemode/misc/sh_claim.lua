@@ -32,6 +32,8 @@ function un_claim(ply, ent)
                     table.remove(claimed_buttons, iter)
                     ply.has_claimed = false
                     ent.is_claimed = false
+                    ply.claimed_ent = nil
+                    ent.claimed_ply = nil
                 end
             end
         end
@@ -94,6 +96,7 @@ local claim_use = function(ply, ent)
             if ((ply:Alive() == true) and
             (target.is_claimed == false) and
             (target:GetClass() == "func_button")) then
+                DEATHRUN_ADDONS.Notify.Notify("YOU HAVE CLAIMED THIS BUTTON", DEATHRUN_ADDONS.Notify.Enums["LABEL"])
                 target.is_claimed = true
                 do_claim(ply, ent)
                 claim_tick(ply)
@@ -108,6 +111,7 @@ end
 if CLIENT then
 function think_button_claim(ply, ent)
     if (ply:KeyReleased(IN_ALT1)) then
+        print("SAW")
         net.Start("claim_use_all")
         net.WriteEntity(ply)
         net.WriteEntity(ent)

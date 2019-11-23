@@ -11,13 +11,13 @@ drf_maps = {}
 include("misc/sh_rounds.lua")
 
 function GM:CreateTeams()
-    team.SetUp(TEAM_SPECTATOR, "Spectator", Color(25, 100, 100, 255), false)
+    team.SetUp(TEAM_SPECTATOR, "Spectator", Color(210, 210, 210, 255), false)
     team.SetUp(TEAM_RUNNERS, "Runners", Color(100, 100, 220, 255), false)
     team.SetUp(TEAM_DEATH, "Death", Color(220, 100, 100, 255), false)
 
     team.SetSpawnPoint(TEAM_RUNNERS, "info_player_counterterrorist")
     team.SetSpawnPoint(TEAM_DEATH, "info_player_terrorist")
-    team.SetSpawnPoint(TEAM_SPECTATOR, "info_player_counterterrorist")
+    team.SetSpawnPoint(TEAM_SPECTATOR, "worldspawn")
 end
 
 function GM:PhysgunPickup(ply, entity)
@@ -56,8 +56,9 @@ function GM:PlayerUse(ply, ent)
     return true
 end
 
--- somebody else made this. took from old deathrun gamemode.
+-- somebody else made this. took from old deathrun gamemode. thank you Mr-Gash
 -- mimics CSS movement inside of GMod
+-- azuisleet i think is the guys name who did.
 function GM:Move(pl, movedata)
 	if pl:IsOnGround() or !pl:Alive() or pl:WaterLevel() > 0 then return end
 

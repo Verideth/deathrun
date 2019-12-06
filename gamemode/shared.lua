@@ -3,33 +3,37 @@ GM.Author = "Verideth and Bambo"
 GM.Email = "N/A"
 GM.Website = "N/A"
 
+GM.AllowSpectating = true
+
 TEAM_RUNNERS = 2
 TEAM_DEATH = 3
-TEAM_WAITING = -1
-drf_maps = {}
 
-include("misc/sh_rounds.lua")
+include("notifications/sh_notifications.lua")
+include("cl_hud.lua")
+include("misc/sv_rounds.lua")
+include("misc/sh_claim.lua")
+include("q_menu/sh_q_menu.lua")
+include("scoreboard/cl_scoreboard.lua")
 
 function GM:CreateTeams()
-    team.SetUp(TEAM_SPECTATOR, "Spectator", Color(210, 210, 210, 255), false)
+    team.SetUp(TEAM_SPECTATOR, "Spectator", Color(255, 210, 210, 155), true)
     team.SetUp(TEAM_RUNNERS, "Runners", Color(100, 100, 220, 255), false)
     team.SetUp(TEAM_DEATH, "Death", Color(220, 100, 100, 255), false)
 
     team.SetSpawnPoint(TEAM_RUNNERS, "info_player_counterterrorist")
     team.SetSpawnPoint(TEAM_DEATH, "info_player_terrorist")
-    team.SetSpawnPoint(TEAM_SPECTATOR, "worldspawn")
 end
 
 function GM:PhysgunPickup(ply, entity)
-    if (not ply:IsSuperAdmin()) then
+    if (ply:IsSuperAdmin() == false) then
         return false
     end
 
-    if (not IsValid(entity)) then
+    if (IsValid(entity) == false) then
         return false
     end
 
-    if (not entity:IsWeapon()) then
+    if (entity:IsWeapon() == false) then
         return false
     end
 

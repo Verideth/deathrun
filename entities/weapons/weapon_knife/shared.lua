@@ -4,13 +4,13 @@ if SERVER then
 	SWEP.AutoSwitchFrom		= false
 elseif CLIENT then
 
-	SWEP.PrintName			= "Tactical Knife"	
+	SWEP.PrintName			= "Tactical Knife"
 	SWEP.Author				= "cheesylard" -- Works fine - I lost my own one because of update, since then I use this one with a minor edit -- traces modified by arizard
 	SWEP.DrawAmmo			= false
 	SWEP.ViewModelFOV		= 82
 	SWEP.ViewModelFlip		= false
 	SWEP.CSMuzzleFlashes	= false
-	
+
 	SWEP.Slot				= 0
 	SWEP.SlotPos			= 1
 	SWEP.IconLetter			= "j"
@@ -19,7 +19,7 @@ elseif CLIENT then
 
 	SWEP.NameOfSWEP			= "weapon_knife" --always make this the name of the folder the SWEP is in.
 	killicon.AddFont( SWEP.NameOfSWEP, "CSKillIcons", SWEP.IconLetter, Color( 255, 80, 0, 255 ) )
-	
+
 end
 
 SWEP.Slot				= 0
@@ -35,7 +35,7 @@ SWEP.Spawnable				= true
 SWEP.AdminSpawnable			= true
 
 SWEP.ViewModel = "models/weapons/cstrike/c_knife_t.mdl"
-SWEP.WorldModel = "models/weapons/w_knife_t.mdl" 
+SWEP.WorldModel = "models/weapons/w_knife_t.mdl"
 
 SWEP.UseHands = true
 
@@ -69,7 +69,7 @@ SWEP.IdleTimer = CurTime()
 
 function SWEP:SecondaryAttack()
 	if true then return end
-	if ( self.ShootafterTakeout > CurTime() ) then return end		
+	if ( self.ShootafterTakeout > CurTime() ) then return end
 	self.Weapon:SetNextPrimaryFire( CurTime() + 0.5 )
 	self.Weapon:SetNextSecondaryFire( CurTime() + 0.5 )
 
@@ -126,13 +126,13 @@ function SWEP:PrimaryAttack()
 		end
 	end
 
-	if ( self.ShootafterTakeout > CurTime() ) then return end		
+	if ( self.ShootafterTakeout > CurTime() ) then return end
 	self.Weapon:SetNextPrimaryFire( CurTime() + 0.5 )
 	self.Weapon:SetNextSecondaryFire( CurTime() + 0.5 )
 
 	self.Owner:SetAnimation( PLAYER_ATTACK1 );
 	self.Weapon:SendWeaponAnim( ACT_VM_PRIMARYATTACK )
-	
+
 	self.Owner:SetAnimation( PLAYER_ATTACK1 ) --3rd Person Animation
 	self.Weapon:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
 end
@@ -151,6 +151,6 @@ end
 function SWEP:Deploy()
 	self:SendWeaponAnim( ACT_VM_DRAW )
 	self.Owner:EmitSound( Sound("weapons/knife/knife_deploy1.wav") )
-	
+
 	return true
 end

@@ -157,62 +157,11 @@ end
 ThrowFar
 ---------------------------------------------------------*/
 function SWEP:ThrowFar()
-
-        if self.Primed != 2 then return end
-
-        local tr = self.Owner:GetEyeTrace()
-
-        if (!SERVER) then return end
-
-        local ent = ents.Create (self.NadeClass)
-
-                        local v = self.Owner:GetShootPos()
-                                v = v + self.Owner:GetForward() * 2
-                        ent:SetPos( v )
-
-        --ent:SetAngles ((Vector(math.random(1,100),math.random(1,100),math.random(1,100))):Angle())
-        ent:SetOwner( self.Owner )
-        ent.GrenadeOwner = self.Owner
-        ent:Spawn()
-
-        local phys = ent:GetPhysicsObject()
-
-        phys:ApplyForceCenter( self.Owner:GetVelocity() )
-        phys:ApplyForceCenter(self.Owner:GetAimVector() *750 + Vector(0,0,70) )
-        phys:AddAngleVelocity(Vector(math.random(-200,200),math.random(-200,200),math.random(-200,200)))
-
-        self.Owner:StripWeapon(self.Owner:GetActiveWeapon():GetClass())
-
 end
 
 /*---------------------------------------------------------
 ThrowShort
 ---------------------------------------------------------*/
 function SWEP:ThrowShort()
-
-        if self.Primed != 2 then return end
-
-        local tr = self.Owner:GetEyeTrace()
-
-        if (!SERVER) then return end
-
-        local ent = ents.Create (self.NadeClass)
-
-                        local v = self.Owner:GetShootPos()
-                                v = v + self.Owner:GetForward() * 2
-                        ent:SetPos( v )
-
-        ent:SetAngles ((Vector(math.random(1,100),math.random(1,100),math.random(1,100))):Angle())
-        ent:SetOwner( self.Owner )
-        ent.GrenadeOwner = self.Owner
-        ent:Spawn()
-
-        local phys = ent:GetPhysicsObject()
-
-        phys:ApplyForceCenter( self.Owner:GetVelocity() )
-        phys:ApplyForceCenter(self.Owner:GetAimVector() *50 )
-        phys:AddAngleVelocity(Vector(math.random(-200,200),math.random(-200,200),math.random(-200,200)))
-
-        self.Owner:StripWeapon(self.Owner:GetActiveWeapon():GetClass())
 
 end

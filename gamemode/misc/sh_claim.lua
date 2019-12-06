@@ -104,18 +104,19 @@ local claim_use = function(ply, ent)
         end
     end
 end
-
 net.Receive("claim_use_all", claim_use)
 end
 
 if CLIENT then
 function think_button_claim(ply, ent)
-    if (ply:KeyReleased(IN_ALT1)) then
-        print("SAW")
-        net.Start("claim_use_all")
-        net.WriteEntity(ply)
-        net.WriteEntity(ent)
-        net.SendToServer()
+    if (ply:Team() == TEAM_DEATH) then
+        if (ply:KeyReleased(IN_ALT1)) then
+            print("SAW")
+            net.Start("claim_use_all")
+            net.WriteEntity(ply)
+            net.WriteEntity(ent)
+            net.SendToServer()
+        end
     end
 
     ent:SetMaterial(ent_mat)

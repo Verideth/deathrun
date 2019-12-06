@@ -1,12 +1,5 @@
 DEATHRUN_ADDONS = {}
-
 include("shared.lua")
-include("misc/sh_claim.lua")
-include("cl_hud.lua")
-include("misc/sh_rounds.lua")
--- include("team_manager/sh_team_manager.lua")
-include("notifications/sh_notifications.lua")
-include("q_menu/sh_q_menu.lua")
 
 local hide = {
 	["CHudBattery"] = true,
@@ -37,4 +30,8 @@ end
 
 hook.Add("HUDShouldDraw", "hide_hud", function(name)
 	if (hide[name]) then return false end
+end)
+
+hook.Add("GetHandsModel", "hands", function()
+	return { model = "models/weapons/c_arms_hev.mdl", skin = 1, body = "0100000" }
 end)

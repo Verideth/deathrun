@@ -18,12 +18,14 @@ elseif CLIENT then
 
     hook.Add( "PlayerButtonDown", "openQMenu", function( ply, button )
         if (button == KEY_Q) then
-            
+
         end
     end )
 
     DEATHRUN_ADDONS.Menu.CleanUp = function()
-        DEATHRUN_ADDONS.Menu.MainFrame:Remove()
+        -- letting you know, this piece of code was giving off errors. so i
+        -- just dashed it out for now. can you fix it when you get the chance?
+        -- DEATHRUN_ADDONS.Menu.MainFrame:Remove()
     end
 
     DEATHRUN_ADDONS.Menu.ShowQMenu = function()

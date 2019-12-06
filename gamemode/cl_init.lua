@@ -5,7 +5,7 @@ local hide = {
 	["CHudBattery"] = true,
 	["CHudHealth"] = true,
 	["CHudAmmo"] = true,
-    ["CHudCrosshair"] = true
+ 	["CHudCrosshair"] = true
 }
 
 concommand.Add("drf_get_team", function()

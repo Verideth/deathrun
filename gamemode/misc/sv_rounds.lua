@@ -44,7 +44,7 @@ end
 function sort_players()
     if (GetGlobalInt("drf_current_gamestate") == DRF_GAMESTATE_WAITING) then
         if (death_needed() != 0) then
-            -- hard coded but idc, its for test purposes
+            -- for test purposes
             local player_1 = math.random(1, #player.GetAll())
             local player_2 = math.random(4, #player.GetAll())
             local player_3 = math.random(8, #player.GetAll())
